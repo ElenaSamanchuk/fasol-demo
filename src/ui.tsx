@@ -20,8 +20,8 @@ export const useDesktop = () => useMedia('(min-width: 1024px)')
 export function Reveal({ children, delay = 0, y = 24, className = '' }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
   const reduce = useReducedMotion()
   return (
-    <motion.div className={className} initial={reduce ? { opacity: 0 } : { opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -12% 0px' }} transition={{ duration: 0.9, ease: EASE_IO, delay }}>
+    <motion.div className={className} initial={reduce ? { opacity: 0 } : { opacity: 0, y: y / 3 }} whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -6% 0px' }} transition={{ duration: 0.7, ease: EASE_IO, delay: delay / 2 }}>
       {children}
     </motion.div>
   )

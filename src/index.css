@@ -19,7 +19,7 @@
 }
 
 @layer base {
-  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 128px; scroll-behavior: smooth; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 132px; }
   body { @apply bg-porc text-ink font-sans antialiased; overflow-x: clip; }
   :focus-visible { outline: 2.5px solid var(--color-crimson); outline-offset: 3px; border-radius: 10px; }
   button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -32,13 +32,15 @@
 }
 
 /* панель разделов меню едет вместе с шапкой */
-.menu-bar { transition: top .35s var(--ease-out-soft); }
-html[data-head="1"] .menu-bar { top: 64px; }
-@media (min-width: 1024px) { html[data-head="1"] .menu-bar { top: 80px; } }
+.menu-bar { top: 64px; }
+@media (min-width: 1024px) { .menu-bar { top: 80px; } }
 
-/* тарелка «стоит» с мягкой тенью; при наведении чуть поворачивается — фирменный жест сайта */
-.plate-img { filter: drop-shadow(0 14px 14px rgb(31 23 21 / .16)); transition: transform 1s var(--ease-out-soft); }
-.group:hover .plate-img { transform: rotate(-9deg) scale(1.04); }
+/* мягкое проявление фото после загрузки */
+main img { opacity: 0; transition: opacity .6s var(--ease-io); }
+main img.is-in { opacity: 1; }
+
+/* тарелка «стоит» с мягкой тенью */
+.plate-img { filter: drop-shadow(0 14px 14px rgb(31 23 21 / .16)); }
 
 [data-vaul-overlay] { background: rgb(20 12 10 / .42) !important; backdrop-filter: blur(3px); }
 
