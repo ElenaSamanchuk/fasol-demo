@@ -95,7 +95,7 @@ export function FlyLayer() {
         <motion.img key={shot.n} src={shot.src} alt="" aria-hidden className="pointer-events-none fixed top-0 left-0 z-[70] rounded-full object-cover"
           style={{ width: shot.s, height: shot.s, filter: 'drop-shadow(0 12px 14px rgba(31,23,21,.3))' }}
           initial={{ x: shot.x0, y: shot.y0, scale: 1, rotate: 0, opacity: 1 }}
-          animate={{ x: [shot.x0, (shot.x0 + shot.x1) / 2, shot.x1], y: [shot.y0, Math.min(shot.y0, shot.y1) - 110, shot.y1], scale: [1, 0.7, 0.22], rotate: [0, 90, 200], opacity: [1, 1, 0.3] }}
+          animate={{ x: [shot.x0, (shot.x0 + shot.x1) / 2, shot.x1], y: [shot.y0, Math.min(shot.y0, shot.y1) - 110, shot.y1], scale: [1, 0.7, 0.22], rotate: [0, 20, 45], opacity: [1, 1, 0.3] }}
           transition={{ duration: 0.7, ease: [0.5, 0, 0.3, 1] }}
           onAnimationComplete={() => setShot(null)} />
       )}
