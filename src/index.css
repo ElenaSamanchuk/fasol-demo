@@ -33,6 +33,9 @@
   :focus-visible { outline: 2.5px solid var(--color-crimson); outline-offset: 3px; border-radius: 10px; }
   button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   img { user-select: none; -webkit-user-drag: none; }
+  /* ровные переносы: без одного слова на строке */
+  h1, h2, h3, h4 { text-wrap: balance; }
+  p, li, dd, dt, label { text-wrap: pretty; }
 }
 
 @utility no-scrollbar {
