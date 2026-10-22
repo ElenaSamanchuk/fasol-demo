@@ -156,9 +156,9 @@ function DishSheet({ id }: { id: string }) {
   const footer = d.stop
     ? <div className="flex h-14 items-center justify-center rounded-full bg-porc font-bold text-mute">Сегодня закончилось — загляните завтра</div>
     : <div className="flex items-center gap-2.5">
-        <Stepper q={q} onDec={() => setQ(Math.max(1, q - 1))} onInc={() => setQ(Math.min(20, q + 1))} light label={d.name} size="lg" />
-        <button type="button" onClick={doAdd} className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-5 text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">
-          Добавить · <Price v={unit * q} />
+        <Stepper q={q} onDec={() => setQ(Math.max(1, q - 1))} onInc={() => setQ(Math.min(20, q + 1))} light label={d.name} size={desk ? 'lg' : 'md'} />
+        <button type="button" onClick={doAdd} className="flex h-14 min-w-0 flex-1 items-center justify-between gap-3 rounded-full bg-crimson px-5 text-base font-semibold whitespace-nowrap text-white transition-colors duration-300 hover:bg-crimson-d">
+          <span>Добавить</span><Price v={unit * q} />
         </button>
       </div>
 
