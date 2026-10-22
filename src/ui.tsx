@@ -49,14 +49,14 @@ export function Roll({ value, className = '' }: { value: string | number; classN
   )
 }
 
-export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: number; onDec: () => void; onInc: () => void; light?: boolean; label: string; size?: 'sm' | 'md' | 'lg' }) {
-  const h = size === 'lg' ? 'h-14' : size === 'sm' ? 'h-10' : 'h-11'
-  const b = size === 'lg' ? 'size-12' : size === 'sm' ? 'size-9' : 'size-10'
+export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: number; onDec: () => void; onInc: () => void; light?: boolean; label: string; size?: 'xs' | 'sm' | 'md' | 'lg' }) {
+  const h = size === 'lg' ? 'h-14' : size === 'sm' ? 'h-10' : size === 'xs' ? 'h-9' : 'h-11'
+  const b = size === 'lg' ? 'size-12' : size === 'sm' ? 'size-9' : size === 'xs' ? 'size-8' : 'size-10'
   return (
     <span className={`inline-flex items-center rounded-full px-0.5 ${h} ${light ? 'bg-plate text-ink' : 'bg-crimson text-white'}`}>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onDec() }} aria-label={`Меньше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="minus" s={18} w={2.2} /></button>
-      <b className="min-w-5 text-center text-[15px] font-extrabold tabular-nums"><Roll value={q} /></b>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onInc() }} aria-label={`Больше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="plus" s={18} w={2.2} /></button>
+      <button type="button" onClick={(e) => { e.stopPropagation(); onDec() }} aria-label={`Меньше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="minus" s={size === 'xs' ? 15 : 18} w={2.2} /></button>
+      <b className="min-w-5 text-center text-sm font-extrabold tabular-nums"><Roll value={q} /></b>
+      <button type="button" onClick={(e) => { e.stopPropagation(); onInc() }} aria-label={`Больше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="plus" s={size === 'xs' ? 15 : 18} w={2.2} /></button>
     </span>
   )
 }
@@ -64,14 +64,14 @@ export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: num
 export function Chip({ on, children, onClick, sub }: { on?: boolean; children: ReactNode; onClick?: () => void; sub?: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={!!on}
-      className={`shrink-0 rounded-xl px-3.5 text-[14px] font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-crimson-50 text-crimson ring-[1.5px] ring-crimson ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
-      {children}{sub && <small className="mt-0.5 block text-[11px] font-medium opacity-65">{sub}</small>}
+      className={`shrink-0 rounded-xl px-3.5 text-sm font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-crimson-50 text-crimson ring-[1.5px] ring-crimson ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
+      {children}{sub && <small className="mt-0.5 block text-xs font-medium opacity-65">{sub}</small>}
     </button>
   )
 }
 
 export function Label({ children }: { children: ReactNode }) {
-  return <div className="mt-5 mb-2 text-[14px] font-semibold text-ink">{children}</div>
+  return <div className="mt-5 mb-2 text-sm font-semibold text-ink">{children}</div>
 }
 
 // Маска +375 (29) 123-45-67: скобки и дефисы появляются только когда есть следующая цифра
@@ -93,9 +93,9 @@ export function PhoneField({ value, onChange, error }: { value: string; onChange
         <Icon n="phone" s={18} />
         <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+375 (29) 123-45-67" value={value}
           onChange={(e) => onChange(telMask(e.target.value).v)} aria-invalid={!!error} aria-describedby="tel-err"
-          className="min-w-0 flex-1 bg-transparent text-[16px] font-medium tracking-wide text-ink outline-none placeholder:text-mute/70" />
+          className="min-w-0 flex-1 bg-transparent text-base font-medium tracking-wide text-ink outline-none placeholder:text-mute/70" />
       </label>
-      <p id="tel-err" role="alert" className={`text-[13px] font-semibold text-crimson ${error ? "mt-2" : ""}`}>{error}</p>
+      <p id="tel-err" role="alert" className={`text-sm font-semibold text-crimson ${error ? "mt-2" : ""}`}>{error}</p>
     </>
   )
 }

@@ -55,7 +55,7 @@ function Sheet({ open, onClose, title, children, footer, wide, side }: { open: b
         <div className="fixed inset-0 z-50 grid place-items-center p-6" role="dialog" aria-modal="true" aria-label={title}>
           <motion.div className="absolute inset-0 bg-[rgb(20_12_10/.42)] backdrop-blur-[3px]" onClick={onClose}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} />
-          <motion.div className={`relative flex max-h-[min(860px,calc(100svh-48px))] w-full flex-col overflow-hidden rounded-[28px] bg-white shadow-float ${wide ? 'max-w-[920px]' : 'max-w-[520px]'}`}
+          <motion.div className={`relative flex max-h-[min(860px,calc(100svh-48px))] w-full flex-col overflow-hidden rounded-3xl bg-white shadow-lg ${wide ? 'max-w-[920px]' : 'max-w-[520px]'}`}
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.4, ease: [0.45, 0, 0.2, 1] }}>
             <div className="flex-1 overflow-y-auto overscroll-contain p-6">{children}</div>
@@ -102,7 +102,7 @@ function DishSheet({ id }: { id: string }) {
 
   const pic = (
     <div ref={picRef} className={`relative grid place-items-center overflow-hidden rounded-3xl bg-plate ${desk ? 'aspect-square self-start' : 'h-[230px]'}`}>
-      {d.tag && <span className="absolute top-3 left-3 z-10 rounded-full bg-crimson px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[.08em] text-white">{d.tag}</span>}
+      {d.tag && <span className="absolute top-3 left-3 z-10 rounded-full bg-crimson px-3 py-1.5 text-xs font-extrabold uppercase tracking-[.08em] text-white">{d.tag}</span>}
       <motion.div className="grid size-full place-items-center" initial={{ scale: 0.86, rotate: -14, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} transition={{ duration: 0.8, ease: EASE }}>
         <DishPic id={id} big />
       </motion.div>
@@ -113,16 +113,16 @@ function DishSheet({ id }: { id: string }) {
   const body = (
     <div>
       {desk && <div className="mb-2 flex justify-end"><CloseBtn onClick={close} /></div>}
-      <h2 className="font-serif text-[28px] leading-[1.15] font-medium tracking-[-.015em]">{nb(d.name)}</h2>
-      <div className="mt-2 flex items-baseline gap-3"><Price v={d.price} per100={d.per100} className="text-[21px]" /><span className="text-[14px] font-semibold text-mute">{d.per100 ? 'на вес' : d.weight}</span></div>
-      <p className="mt-2.5 text-[15px] leading-relaxed text-ink2">{nb(d.desc)}</p>
+      <h2 className="font-serif text-2xl leading-[1.15] font-medium tracking-[-.015em]">{nb(d.name)}</h2>
+      <div className="mt-2 flex items-baseline gap-3"><Price v={d.price} per100={d.per100} className="text-xl" /><span className="text-sm font-semibold text-mute">{d.per100 ? 'на вес' : d.weight}</span></div>
+      <p className="mt-2.5 text-sm leading-relaxed text-ink2">{nb(d.desc)}</p>
 
-      <div className="mt-5 grid grid-cols-4 gap-2 rounded-2xl bg-porc p-2">
+      <div className="mt-5 grid grid-cols-4 gap-2">
         {[[k.kcal, 'ккал'], [k.p, 'белки'], [k.f, 'жиры'], [k.c, 'углев.']].map(([v, l]) => (
-          <div key={l} className="rounded-xl bg-white py-2.5 text-center"><b className="block text-[17px] font-extrabold">{v}</b><span className="text-[12px] font-semibold text-mute">{l}</span></div>
+          <div key={l} className="rounded-xl bg-plate py-3 text-center"><b className="block text-lg font-extrabold">{v}</b><span className="text-xs font-semibold text-mute">{l}</span></div>
         ))}
       </div>
-      <p className="mt-2 text-[12px] font-semibold text-mute">КБЖУ на порцию — пример, настоящие цифры возьмём из таблицы меню</p>
+      <p className="mt-2 text-xs font-semibold text-mute">КБЖУ на порцию — пример, настоящие цифры возьмём из таблицы меню</p>
 
       {(ADDS_BY[cat] || []).length > 0 && <>
         <Label>Добавить</Label>
@@ -131,7 +131,7 @@ function DishSheet({ id }: { id: string }) {
             const on = adds.includes(a)
             return (
               <button key={a} type="button" aria-pressed={on} onClick={() => setAdds(on ? adds.filter((x) => x !== a) : [...adds, a])}
-                className="inline-flex h-11 items-center gap-2.5 rounded-full bg-porc pr-4 pl-2.5 text-[14px] font-bold transition hover:bg-plate">
+                className="inline-flex h-11 items-center gap-2.5 rounded-full bg-porc pr-4 pl-2.5 text-sm font-bold transition hover:bg-plate">
                 <i className={`grid size-6 place-items-center rounded-lg transition ${on ? 'bg-crimson text-white' : 'bg-white text-transparent ring-[1.5px] ring-ink/15 ring-inset'}`}><Icon n="check" s={16} w={2.6} /></i>
                 {ADDS[a].name} <em className="font-semibold text-mute not-italic">+{money(ADDS[a].price)}</em>
               </button>
@@ -145,7 +145,7 @@ function DishSheet({ id }: { id: string }) {
         {(PAIRS[cat] || []).filter((p) => p !== id).map((p) => (
           <button key={p} type="button" onClick={() => open({ kind: 'dish', id: p })} className="group grid grid-cols-[56px_1fr_auto] items-center gap-3 rounded-2xl bg-porc p-2 text-left transition hover:bg-plate">
             <span className="relative grid size-14 place-items-center overflow-hidden rounded-xl bg-white"><DishPic id={p} /></span>
-            <span><b className="block text-[13px] leading-tight font-bold">{nb(DISH[p].name)}</b><Price v={DISH[p].price} className="mt-1 block text-[13px]" /></span>
+            <span><b className="block text-sm leading-tight font-bold">{nb(DISH[p].name)}</b><Price v={DISH[p].price} className="mt-1 block text-sm" /></span>
             <Icon n="chev" s={18} className="mr-1 text-mute" />
           </button>
         ))}
@@ -157,7 +157,7 @@ function DishSheet({ id }: { id: string }) {
     ? <div className="flex h-14 items-center justify-center rounded-full bg-porc font-bold text-mute">Сегодня закончилось — загляните завтра</div>
     : <div className="flex items-center gap-2.5">
         <Stepper q={q} onDec={() => setQ(Math.max(1, q - 1))} onInc={() => setQ(Math.min(20, q + 1))} light label={d.name} size="lg" />
-        <button type="button" onClick={doAdd} className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-5 text-[16px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(174,22,61,.8)] transition hover:bg-crimson-d active:scale-[.98]">
+        <button type="button" onClick={doAdd} className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-5 text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">
           Добавить · <Price v={unit * q} />
         </button>
       </div>
@@ -212,8 +212,8 @@ function CartSheet() {
       body: (
         <div className="pt-2">
           <div className="flex items-start justify-between gap-3">
-            <div><div className="text-[14px] font-semibold text-mute">Заказ №{order.n}</div>
-              <h2 className="mt-1.5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">{STEPS[step].t}</h2></div>
+            <div><div className="text-sm font-semibold text-mute">Заказ №{order.n}</div>
+              <h2 className="mt-1.5 font-serif text-3xl leading-tight font-medium tracking-[-.015em]">{STEPS[step].t}</h2></div>
             <CloseBtn onClick={close} />
           </div>
           <div className="mt-6 grid gap-0">
@@ -221,24 +221,24 @@ function CartSheet() {
               <div key={s.t} className="grid grid-cols-[32px_1fr] gap-3">
                 <div className="flex flex-col items-center">
                   <motion.span className="grid size-8 place-items-center rounded-full" animate={{ backgroundColor: i <= step ? '#AE163D' : '#F3EFEB', color: i <= step ? '#fff' : '#77706C', scale: i === step ? [1, 1.12, 1] : 1 }} transition={{ duration: 0.5 }}>
-                    {i < step ? <Icon n="check" s={16} w={2.6} /> : <b className="text-[13px]">{i + 1}</b>}
+                    {i < step ? <Icon n="check" s={16} w={2.6} /> : <b className="text-sm">{i + 1}</b>}
                   </motion.span>
                   {i < 2 && <span className="my-1 w-0.5 flex-1 rounded bg-plate"><motion.span className="block w-full rounded bg-crimson" initial={{ height: 0 }} animate={{ height: i < step ? '100%' : '0%' }} transition={{ duration: 0.6, ease: EASE }} /></span>}
                 </div>
-                <div className="pb-6"><b className={`text-[16px] ${i <= step ? 'text-ink' : 'text-mute'}`}>{s.t}</b><p className="text-[14px] text-mute">{s.d}</p></div>
+                <div className="pb-6"><b className={`text-base ${i <= step ? 'text-ink' : 'text-mute'}`}>{s.t}</b><p className="text-sm text-mute">{s.d}</p></div>
               </div>
             ))}
           </div>
-          <div className="rounded-2xl bg-porc p-4 text-[15px]">
+          <div className="rounded-2xl bg-porc p-4 text-sm">
             <div className="flex justify-between"><span className="text-mute">Заберёте</span><b>{order.slot}</b></div>
             <div className="mt-2 flex justify-between"><span className="text-mute">Состав</span><b>{dishes(order.count)}</b></div>
             <div className="mt-2 flex justify-between"><span className="text-mute">К оплате на месте</span><Price v={order.sum} /></div>
             <div className="mt-2 flex justify-between"><span className="text-mute">Адрес</span><b>Советская, 36</b></div>
           </div>
-          <p className="mt-4 text-center text-[12px] font-semibold text-mute">Демо: заказ никуда не отправлен, статусы показаны для примера</p>
+          <p className="mt-4 text-center text-xs font-semibold text-mute">Демо: заказ никуда не отправлен, статусы показаны для примера</p>
         </div>
       ),
-      footer: <a href="tel:+375447903333" className="flex h-14 items-center justify-center gap-2 rounded-full bg-ink text-[16px] font-bold text-white"><Icon n="phone" s={18} />Позвонить в ресторан</a>,
+      footer: <a href="tel:+375447903333" className="flex h-14 items-center justify-center gap-2 rounded-full bg-ink text-base font-bold text-white"><Icon n="phone" s={18} />Позвонить в ресторан</a>,
     }
   }
 
@@ -248,11 +248,11 @@ function CartSheet() {
         <div className="py-8 text-center">
           <div className="flex justify-end"><CloseBtn onClick={close} /></div>
           <div className="mx-auto grid size-20 place-items-center rounded-full bg-porc text-crimson"><Icon n="bag" s={32} w={1.8} /></div>
-          <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Здесь появится ваш заказ</h2>
-          <p className="mx-auto mt-2 max-w-[300px] text-[15px] text-ink2">{nb('Нажмите «+» у блюда — соберём заказ с собой, оплата на месте')}</p>
+          <h2 className="mt-5 font-serif text-3xl leading-tight font-medium tracking-[-.015em]">Здесь появится ваш заказ</h2>
+          <p className="mx-auto mt-2 max-w-[300px] text-sm text-ink2">{nb('Нажмите «+» у блюда — соберём заказ с собой, оплата на месте')}</p>
         </div>
       ),
-      footer: <button type="button" onClick={() => { close(); document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' }) }} className="h-14 w-full rounded-full bg-crimson text-[16px] font-bold text-white">Открыть меню</button>,
+      footer: <button type="button" onClick={() => { close(); document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' }) }} className="h-14 w-full rounded-full bg-crimson text-base font-bold text-white">Открыть меню</button>,
     }
   }
 
@@ -260,7 +260,7 @@ function CartSheet() {
     body: (
       <div>
         <div className="flex items-start justify-between gap-3">
-          <div><h2 className="font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Ваш заказ</h2><p className="mt-1 text-[14px] font-medium text-mute">С собой · {dishes(count)}</p></div>
+          <div><h2 className="font-serif text-3xl leading-tight font-medium tracking-[-.015em]">Ваш заказ</h2><p className="mt-1 text-sm font-medium text-mute">С собой · {dishes(count)}</p></div>
           <CloseBtn onClick={close} />
         </div>
         <ul className="mt-3">
@@ -269,9 +269,9 @@ function CartSheet() {
               <motion.li key={l.key} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, x: 40, height: 0 }} transition={{ duration: 0.35, ease: EASE }} className="overflow-hidden">
                 <div className="grid grid-cols-[60px_1fr_auto] items-center gap-3 border-b border-line py-3">
                   <span className="relative grid size-15 place-items-center overflow-hidden rounded-2xl bg-plate"><DishPic id={l.id} /></span>
-                  <div className="min-w-0"><b className="block text-[15px] leading-tight font-bold">{nb(DISH[l.id].name)}</b>
-                    {l.adds.length > 0 && <span className="mt-0.5 block text-[12px] font-semibold text-mute">+ {l.adds.map((a) => ADDS[a].name).join(', ')}</span>}
-                    <span className="mt-1 block text-[14px]"><Price v={lineUnit(l)} />{DISH[l.id].per100 && <span className="text-[12px] font-semibold text-mute"> × 100{NB}г</span>}</span></div>
+                  <div className="min-w-0"><b className="block text-sm leading-tight font-bold">{nb(DISH[l.id].name)}</b>
+                    {l.adds.length > 0 && <span className="mt-0.5 block text-xs font-semibold text-mute">+ {l.adds.map((a) => ADDS[a].name).join(', ')}</span>}
+                    <span className="mt-1 block text-sm"><Price v={lineUnit(l)} />{DISH[l.id].per100 && <span className="text-xs font-semibold text-mute"> × 100{NB}г</span>}</span></div>
                   <Stepper q={l.q} onDec={() => change(l.key, -1)} onInc={() => change(l.key, 1)} light label={DISH[l.id].name} size="sm" />
                 </div>
               </motion.li>
@@ -279,21 +279,21 @@ function CartSheet() {
           </AnimatePresence>
         </ul>
         <Label>Когда заберёте</Label>
-        {!sl.asap && <p className="mb-2.5 rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('Сейчас закрыто — приготовим к открытию')}</p>}
+        {!sl.asap && <p className="mb-2.5 rounded-xl bg-plate px-3.5 py-3 text-sm font-medium text-ink2">{nb('Сейчас закрыто — приготовим к открытию')}</p>}
         <div className="flex flex-wrap gap-2">
           {(sl.asap ? ['Через 40 мин', ...sl.list] : sl.list).map((s) => <Chip key={s} on={slot === s} onClick={() => setSlot(s)}>{s}</Chip>)}
         </div>
         <Label>Имя</Label>
-        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="given-name" placeholder="Как к вам обращаться" maxLength={40} className="h-12 w-full rounded-xl bg-white px-4 text-[16px] font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
+        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="given-name" placeholder="Как к вам обращаться" maxLength={40} className="h-12 w-full rounded-xl bg-white px-4 text-base font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
         <Label>Телефон</Label>
         <PhoneField value={phone} onChange={(v) => { setPhone(v); if (telMask(v).ok) setErr('') }} error={err} />
         <div className="mt-6 flex items-end justify-between gap-3 border-t border-line pt-5">
-          <div><b className="block text-[15px]">К оплате на месте</b><span className="text-[13px] font-semibold text-mute">−20{NB}% за самовывоз · пример</span></div>
-          <div className="text-right"><s className="mr-2 text-[15px] font-semibold text-mute">{money(total)}</s><Price v={disc} className="text-[26px]" /></div>
+          <div><b className="block text-sm">К оплате на месте</b><span className="text-sm font-semibold text-mute">−20{NB}% за самовывоз · пример</span></div>
+          <div className="text-right"><s className="mr-2 text-sm font-semibold text-mute">{money(total)}</s><Price v={disc} className="text-2xl" /></div>
         </div>
       </div>
     ),
-    footer: <button type="button" onClick={submit} className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-[16px] font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">Отправить заказ<Icon n="arrow" s={18} /></button>,
+    footer: <button type="button" onClick={submit} className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">Отправить заказ<Icon n="arrow" s={18} /></button>,
   }
 }
 
@@ -328,38 +328,38 @@ function BookSheet() {
         <div className="py-6 text-center">
           <div className="flex justify-end"><CloseBtn onClick={close} /></div>
           <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }} className="mx-auto grid size-22 place-items-center rounded-full bg-crimson text-white"><Icon n="check" s={44} w={2.4} /></motion.div>
-          <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Стол забронирован</h2>
-          <div className="mt-3 inline-block rounded-full bg-porc px-4 py-2 text-[14px] font-bold">{days[day].top}, {days[day].sub} · {time} · {g}{NB}{gw}</div>
-          <p className="mx-auto mt-3 max-w-[320px] text-[15px] text-ink2">{nb('Перезвоним в течение 15 минут и подтвердим стол')}</p>
-          <p className="mt-3 text-[12px] font-semibold text-mute">Демо: бронь никуда не отправлена</p>
+          <h2 className="mt-5 font-serif text-3xl leading-tight font-medium tracking-[-.015em]">Стол забронирован</h2>
+          <div className="mt-3 inline-block rounded-full bg-porc px-4 py-2 text-sm font-bold">{days[day].top}, {days[day].sub} · {time} · {g}{NB}{gw}</div>
+          <p className="mx-auto mt-3 max-w-[320px] text-sm text-ink2">{nb('Перезвоним в течение 15 минут и подтвердим стол')}</p>
+          <p className="mt-3 text-xs font-semibold text-mute">Демо: бронь никуда не отправлена</p>
         </div>
       ),
-      footer: <button type="button" onClick={close} className="h-14 w-full rounded-full bg-ink text-[16px] font-bold text-white">Готово</button>,
+      footer: <button type="button" onClick={close} className="h-14 w-full rounded-full bg-ink text-base font-bold text-white">Готово</button>,
     }
   }
   return {
     body: (
       <div>
-        <div className="flex items-start justify-between gap-3"><h2 className="font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Бронь стола</h2><CloseBtn onClick={close} /></div>
+        <div className="flex items-start justify-between gap-3"><h2 className="font-serif text-3xl leading-tight font-medium tracking-[-.015em]">Бронь стола</h2><CloseBtn onClick={close} /></div>
         <Label>Дата</Label>
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 no-scrollbar">{days.map((d) => <Chip key={d.i} on={day === d.i} onClick={() => setDay(d.i)} sub={d.sub}>{d.top}</Chip>)}</div>
         <Label>Время</Label>
         {times.length ? <div className="flex flex-wrap gap-2">{times.map((t) => <Chip key={t} on={time === t} onClick={() => setTime(t)}>{t}</Chip>)}</div>
-          : <p className="rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('На сегодня бронь уже не принимаем — выберите другой день')}</p>}
+          : <p className="rounded-xl bg-plate px-3.5 py-3 text-sm font-medium text-ink2">{nb('На сегодня бронь уже не принимаем — выберите другой день')}</p>}
         <Label>Гостей</Label>
-        <div className="flex h-12 items-center justify-between rounded-xl bg-white pr-1 pl-4 text-[15px] font-semibold ring-1 ring-[#E3DDD8] ring-inset">
+        <div className="flex h-12 items-center justify-between rounded-xl bg-white pr-1 pl-4 text-sm font-semibold ring-1 ring-[#E3DDD8] ring-inset">
           <span>{g}{NB}{gw}</span>
           <Stepper q={g} onDec={() => setG(Math.max(1, g - 1))} onInc={() => setG(Math.min(30, g + 1))} light label="гости" size="sm" />
         </div>
-        {g >= 9 && <p className="mt-2.5 rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('Для компании от 9 гостей лучше позвонить: +375 44 790-33-33')}</p>}
+        {g >= 9 && <p className="mt-2.5 rounded-xl bg-plate px-3.5 py-3 text-sm font-medium text-ink2">{nb('Для компании от 9 гостей лучше позвонить: +375 44 790-33-33')}</p>}
         <Label>Телефон</Label>
         <PhoneField value={phone} onChange={(v) => { setPhone(v); if (telMask(v).ok) setErr('') }} error={err} />
         <Label>Пожелания</Label>
-        <input placeholder="У окна, детский стул" maxLength={140} aria-label="Пожелания" className="h-12 w-full rounded-xl bg-white px-4 text-[16px] font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
+        <input placeholder="У окна, детский стул" maxLength={140} aria-label="Пожелания" className="h-12 w-full rounded-xl bg-white px-4 text-base font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
       </div>
     ),
     footer: <button type="button" disabled={!time} onClick={() => { if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); return } setDone(true) }}
-      className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-[16px] font-bold text-white transition hover:bg-crimson-d disabled:opacity-40"><Icon n="cal" s={18} />Забронировать{time ? ` · ${time}` : ''}</button>,
+      className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d disabled:opacity-40"><Icon n="cal" s={18} />Забронировать{time ? ` · ${time}` : ''}</button>,
   }
 }
 
@@ -372,12 +372,12 @@ function InfoSheet({ topic }: { topic: 'cert' | 'office' }) {
     body: (
       <div>
         <div className="relative h-[220px] overflow-hidden rounded-3xl"><img src={c.img} alt="" className="size-full object-cover" /><div className="absolute top-3 right-3"><CloseBtn onClick={close} light /></div></div>
-        <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">{c.h}</h2>
-        <p className="mt-2 text-[15px] leading-relaxed text-ink2">{nb(c.p)}</p>
-        {topic === 'cert' && <div className="mt-4 flex flex-wrap gap-2">{[50, 100, 150, 200].map((v) => <span key={v} className="rounded-full bg-porc px-4 py-3 text-[14px] font-bold">{v}{NB}BYN</span>)}</div>}
+        <h2 className="mt-5 font-serif text-3xl leading-tight font-medium tracking-[-.015em]">{c.h}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink2">{nb(c.p)}</p>
+        {topic === 'cert' && <div className="mt-4 flex flex-wrap gap-2">{[50, 100, 150, 200].map((v) => <span key={v} className="rounded-full bg-porc px-4 py-3 text-sm font-bold">{v}{NB}BYN</span>)}</div>}
       </div>
     ),
-    footer: <a href="tel:+375447903333" className="flex h-14 items-center justify-center gap-2 rounded-full bg-crimson text-[16px] font-bold text-white"><Icon n="phone" s={18} />{c.btn}</a>,
+    footer: <a href="tel:+375447903333" className="flex h-14 items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white"><Icon n="phone" s={18} />{c.btn}</a>,
   }
 }
 

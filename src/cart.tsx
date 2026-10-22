@@ -9,15 +9,15 @@ import { EASE, Price, Roll, Stepper, useDesktop } from './ui'
 export function CartPanel() {
   const { lines, count, total, change, open } = useStore()
   return (
-    <div id="cart-target-desk" className="rounded-[28px] bg-white p-5 shadow-[inset_0_0_0_1px_var(--color-line)]">
+    <div id="cart-target-desk" className="rounded-3xl bg-white p-5 shadow-[inset_0_0_0_1px_var(--color-line)]">
       <div className="flex items-baseline justify-between">
-        <h3 className="font-serif text-[26px] font-medium">Ваш заказ</h3>
-        {count > 0 && <span className="text-[13px] font-bold text-mute">{dishes(count)}</span>}
+        <h3 className="font-serif text-2xl font-medium">Ваш заказ</h3>
+        {count > 0 && <span className="text-sm font-bold text-mute">{dishes(count)}</span>}
       </div>
       {!lines.length ? (
         <div className="py-8 text-center">
           <div className="mx-auto grid size-16 place-items-center rounded-full bg-porc text-crimson"><Icon n="bag" s={26} w={1.8} /></div>
-          <p className="mx-auto mt-4 max-w-[230px] text-[14px] text-mute">{nb('Нажмите «+» у блюда — здесь появится заказ с собой')}</p>
+          <p className="mx-auto mt-4 max-w-[230px] text-sm text-mute">{nb('Нажмите «+» у блюда — здесь появится заказ с собой')}</p>
         </div>
       ) : (
         <>
@@ -30,9 +30,9 @@ export function CartPanel() {
                       {DISH[l.id].full ? <img src={DISH[l.id].img} alt="" className="absolute inset-0 size-full object-cover" /> : <img src={DISH[l.id].img} alt="" className="w-[92%]" />}
                     </span>
                     <div className="min-w-0">
-                      <b className="block truncate text-[14px] font-bold">{DISH[l.id].name}</b>
-                      {l.adds.length > 0 && <span className="block truncate text-[12px] font-semibold text-mute">+ {l.adds.map((a) => ADDS[a].name).join(', ')}</span>}
-                      <div className="mt-1.5 flex items-center justify-between"><Price v={lineUnit(l) * l.q} className="text-[14px]" /><Stepper q={l.q} onDec={() => change(l.key, -1)} onInc={() => change(l.key, 1)} light label={DISH[l.id].name} size="sm" /></div>
+                      <b className="block truncate text-sm font-bold">{DISH[l.id].name}</b>
+                      {l.adds.length > 0 && <span className="block truncate text-xs font-semibold text-mute">+ {l.adds.map((a) => ADDS[a].name).join(', ')}</span>}
+                      <div className="mt-1.5 flex items-center justify-between"><Price v={lineUnit(l) * l.q} className="text-sm" /><Stepper q={l.q} onDec={() => change(l.key, -1)} onInc={() => change(l.key, 1)} light label={DISH[l.id].name} size="sm" /></div>
                     </div>
                   </div>
                 </motion.li>
@@ -40,10 +40,10 @@ export function CartPanel() {
             </AnimatePresence>
           </ul>
           <div className="mt-4 flex items-end justify-between">
-            <span className="text-[13px] font-semibold text-mute">С собой −20{NB}%<br />оплата на месте</span>
-            <div className="text-right"><s className="block text-[13px] font-semibold text-mute">{money(total)}</s><Price v={Math.round(total * 80) / 100} className="text-[24px]" /></div>
+            <span className="text-sm font-semibold text-mute">С собой −20{NB}%<br />оплата на месте</span>
+            <div className="text-right"><s className="block text-sm font-semibold text-mute">{money(total)}</s><Price v={Math.round(total * 80) / 100} className="text-2xl" /></div>
           </div>
-          <button type="button" onClick={() => open({ kind: 'cart' })} className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-[16px] font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">Оформить<Icon n="arrow" s={18} /></button>
+          <button type="button" onClick={() => open({ kind: 'cart' })} className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">Оформить<Icon n="arrow" s={18} /></button>
         </>
       )}
     </div>
@@ -67,10 +67,10 @@ export function CartIsland() {
         <motion.button type="button" onClick={() => open({ kind: 'cart' })} initial={{ y: 90, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 90, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
           className="fixed inset-x-4 bottom-[calc(76px+env(safe-area-inset-bottom))] z-40">
-          <motion.span animate={ctl} className="flex h-14 items-center gap-3 rounded-full bg-ink pr-5 pl-2 text-white shadow-float">
-            <span id="cart-target-mob" className="grid size-10 place-items-center rounded-full bg-crimson text-[15px] font-extrabold"><Roll value={count} /></span>
-            <span className="text-[15px] font-bold">Ваш заказ</span>
-            <span className="ml-auto text-[15px] font-extrabold tabular-nums"><Roll value={money(Math.round(total * 80) / 100)} />{NB}BYN</span>
+          <motion.span animate={ctl} className="flex h-14 items-center gap-3 rounded-full bg-ink pr-5 pl-2 text-white shadow-lg">
+            <span id="cart-target-mob" className="grid size-10 place-items-center rounded-full bg-crimson text-sm font-extrabold"><Roll value={count} /></span>
+            <span className="text-sm font-bold">Ваш заказ</span>
+            <span className="ml-auto text-sm font-extrabold tabular-nums"><Roll value={money(Math.round(total * 80) / 100)} />{NB}BYN</span>
           </motion.span>
         </motion.button>
       )}
@@ -114,10 +114,10 @@ export function Toast() {
     <AnimatePresence>
       {toast && !sheet && !desk && (
         <motion.div role="status" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.35, ease: EASE }}
-          className="fixed inset-x-4 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 flex items-center gap-3 rounded-2xl bg-white p-3 pl-3 shadow-float">
+          className="fixed inset-x-4 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 flex items-center gap-3 rounded-2xl bg-white p-3 pl-3 shadow-lg">
           <span className="grid size-7 shrink-0 place-items-center rounded-full bg-crimson text-white"><Icon n="check" s={15} w={2.6} /></span>
-          <span className="min-w-0 flex-1 truncate text-[14px] font-semibold">{toast} — в заказе</span>
-          <button type="button" onClick={() => open({ kind: 'cart' })} className="h-9 shrink-0 rounded-full bg-porc px-3.5 text-[13px] font-bold">Оформить</button>
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold">{toast} — в заказе</span>
+          <button type="button" onClick={() => open({ kind: 'cart' })} className="h-9 shrink-0 rounded-full bg-porc px-3.5 text-sm font-bold">Оформить</button>
         </motion.div>
       )}
     </AnimatePresence>
@@ -127,7 +127,7 @@ export function Toast() {
 /* Нижняя навигация телефона */
 export function BottomNav() {
   const { open } = useStore()
-  const item = 'flex flex-col items-center gap-1 text-[11px] font-bold text-mute active:scale-95 transition'
+  const item = 'flex flex-col items-center gap-1 text-xs font-bold text-mute active:scale-95 transition'
   return (
     <nav aria-label="Быстрые действия" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white/90 px-2 pt-2 pb-[max(10px,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
       <a href="#top" className={item}><Icon n="fork" s={22} w={1.8} />Главная</a>
