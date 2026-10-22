@@ -1,0 +1,353 @@
+import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, LayoutGroup } from 'motion/react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { CATS, DISH, minsk, nb, NB, openState, dishes } from './data'
+import { Icon } from './icons'
+import { Logo } from './logo'
+import { useStore } from './store'
+import { EASE, EASE_IO, Price, Reveal, Stepper, useDesktop } from './ui'
+
+/* ---------- шапка: прозрачная на фото → матовая; прячется при прокрутке вниз ---------- */
+export function Header() {
+  const { scrollY } = useScroll()
+  const [solid, setSolid] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const { open } = useStore()
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0, h = window.innerHeight * 0.8
+    const s = y > h - 80; if (s !== solid) setSolid(s)
+    const hd = y > h && y > prev + 2; const sh = y < prev - 2 || y < h
+    if (hd && !hidden) setHidden(true); else if (sh && hidden) setHidden(false)
+  })
+  useEffect(() => { document.documentElement.dataset.head = !hidden && solid ? '1' : '0' }, [hidden, solid])
+  const nav = [['Меню', '#menu'], ['Хоспер-гриль', '#cat-grill'], ['Бизнес-ланч', '#cat-lunch'], ['О ресторане', '#about'], ['Контакты', '#contacts']]
+  return (
+    <motion.header animate={{ y: hidden ? '-100%' : 0 }} transition={{ duration: 0.35, ease: EASE }}
+      className={`fixed inset-x-0 top-0 z-40 transition-[background,color,box-shadow] duration-300 ${solid ? 'bg-porc/85 text-ink shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150' : 'text-white'}`}>
+      <div className="mx-auto flex h-16 max-w-[1320px] items-center gap-8 px-4 lg:h-20 lg:px-10">
+        <a href="#top" aria-label="Фасоль — наверх" className={`transition-colors ${solid ? 'text-crimson' : 'text-white'}`}><Logo className="h-8 w-auto lg:h-11" /></a>
+        <nav className="hidden gap-7 text-[15px] font-semibold lg:flex" aria-label="Разделы">
+          {nav.map(([t, h]) => <a key={h} href={h} className="relative py-2 opacity-90 transition hover:opacity-100 after:absolute after:inset-x-0 after:bottom-0 after:h-[1.5px] after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100">{t}</a>)}
+        </nav>
+        <div className="ml-auto flex items-center gap-2.5">
+          <a href="tel:+375447903333" className={`hidden h-11 items-center gap-2 rounded-full px-4 text-[15px] font-bold ring-[1.5px] ring-current ring-inset transition xl:inline-flex ${solid ? 'ring-ink/15' : ''}`}><Icon n="phone" s={17} />+375 44 790-33-33</a>
+          <a href="tel:+375447903333" aria-label="Позвонить" className={`grid size-11 place-items-center rounded-full ring-[1.5px] ring-current ring-inset xl:hidden ${solid ? 'text-crimson ring-crimson/25' : ''}`}><Icon n="phone" s={18} /></a>
+          <button type="button" onClick={() => open({ kind: 'book' })} className="hidden h-11 items-center gap-2 rounded-full bg-crimson px-5 text-[15px] font-bold text-white transition hover:bg-crimson-d lg:inline-flex"><Icon n="cal" s={17} />Забронировать стол</button>
+        </div>
+      </div>
+    </motion.header>
+  )
+}
+
+/* ---------- первый экран: фото на весь экран, при прокрутке сжимается в скруглённую карточку ---------- */
+export function Hero() {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const desk = useDesktop()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const scale = useTransform(scrollYProgress, [0, 0.7], [1, reduce ? 1 : desk ? 0.9 : 0.94])
+  const radius = useTransform(scrollYProgress, [0, 0.5], [0, reduce ? 0 : desk ? 40 : 28])
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', reduce ? '0%' : '12%'])
+  const txtO = useTransform(scrollYProgress, [0, 0.45], [1, 0])
+  const st = openState()
+  const line = (t: string, i: number, em?: boolean) => (
+    <span className="block overflow-hidden pb-[.08em]"><motion.span className={`block ${em ? 'font-normal italic' : ''}`} initial={{ y: '105%' }} animate={{ y: 0 }} transition={{ duration: 1.1, ease: EASE_IO, delay: 0.15 + i * 0.12 }}>{t}</motion.span></span>
+  )
+  return (
+    <section id="top" ref={ref} className="relative h-[92svh] min-h-[600px] lg:h-[100svh] lg:max-h-[960px]">
+      <motion.div style={{ scale, borderRadius: radius }} className="absolute inset-0 origin-top overflow-hidden bg-[#2A1E1B] will-change-transform">
+        <motion.img src="img/own-banner.webp" alt="Фирменная тарелка «Фасоли» со стейком на углях" fetchPriority="high" style={{ y: imgY }}
+          initial={{ scale: 1.08 }} animate={{ scale: 1 }} transition={{ duration: 2.4, ease: EASE_IO }}
+          className="absolute inset-0 size-full object-cover object-[34%_50%] lg:object-[50%_62%]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,12,10,.55)_0%,rgba(20,12,10,0)_22%,rgba(20,12,10,0)_42%,rgba(20,12,10,.78)_72%,rgba(20,12,10,.92)_100%)] lg:bg-[linear-gradient(180deg,rgba(20,12,10,.5)_0%,rgba(20,12,10,0)_24%),linear-gradient(90deg,rgba(20,12,10,0)_36%,rgba(20,12,10,.7)_66%,rgba(20,12,10,.84)_100%)]" />
+        <motion.div style={{ opacity: txtO }} className="absolute inset-x-4 bottom-24 text-white lg:inset-x-auto lg:top-1/2 lg:right-10 lg:bottom-auto lg:left-[54%] lg:-translate-y-[42%]">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE_IO }} className="text-[11px] font-bold tracking-[.18em] uppercase lg:text-[13px]">Ресторан международной кухни · Гомель</motion.div>
+          <h1 className="mt-4 font-serif text-[clamp(38px,10.5vw,46px)] leading-[1.02] font-medium tracking-[-.02em] lg:mt-6 lg:text-[clamp(56px,5.4vw,84px)]">
+            {line('Завтраки, обеды', 0)}{line(`и${NB}ужин с${NB}огнём`, 1, true)}
+          </h1>
+          <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE_IO, delay: 0.45 }} className="mt-5 hidden max-w-[460px] text-[18px] leading-relaxed text-white/90 lg:block">{nb('Два этажа в сердце города и печь-гриль Хоспер на древесных углях')}</motion.p>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE_IO, delay: 0.6 }} className="mt-6 flex gap-2.5 lg:mt-9">
+            <BookBtn />
+            <a href="#menu" className="inline-flex h-13 items-center gap-2 rounded-full px-5 text-[16px] font-bold ring-[1.5px] ring-white/80 ring-inset backdrop-blur-sm transition hover:bg-white/10 lg:h-14 lg:px-7">Меню<Icon n="arrow" s={18} /></a>
+          </motion.div>
+        </motion.div>
+        <motion.div style={{ opacity: txtO }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 1 }}
+          className="absolute inset-x-4 bottom-5 flex items-center gap-x-4 gap-y-1 border-t border-white/25 pt-3.5 text-[13px] font-semibold text-white lg:inset-x-10 lg:bottom-7 lg:gap-6 lg:pt-5 lg:text-[14px]">
+          <span className="inline-flex items-center gap-2 whitespace-nowrap"><i className={`size-2 rounded-full ${st.open ? 'bg-[#5BD27A] shadow-[0_0_0_4px_rgba(91,210,122,.25)]' : 'bg-[#E9A23B]'}`} />{st.text}</span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap"><Icon n="star" s={14} className="text-[#F4C04E]" /><b>5,0</b><span className="opacity-80">на{NB}Яндексе<span className="hidden lg:inline"> · 5{NB}651 оценка</span></span></span>
+          <span className="ml-auto hidden lg:inline">Советская, 36</span>
+        </motion.div>
+      </motion.div>
+    </section>
+  )
+}
+function BookBtn() {
+  const { open } = useStore()
+  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-13 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-6 text-[16px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(174,22,61,.9)] transition hover:bg-crimson-d active:scale-[.98] lg:h-14 lg:flex-none lg:px-8"><Icon n="cal" s={18} /><span className="lg:hidden">Забронировать</span><span className="hidden lg:inline">Забронировать стол</span></button>
+}
+
+/* ---------- «Сегодня в Фасоли»: бенто-сетка ---------- */
+const TOD = {
+  morning: { name: 'Утро', icon: 'sun', title: 'Завтраки до 12:00', text: 'В будни с 9:00, в выходные с 10:00', items: ['syrniki', 'nalistniki', 'cheesecake-blue'] },
+  day: { name: 'День', icon: 'clock', title: 'Бизнес-ланч', text: 'Пн–пт 12:00–15:00 · суп + горячее + напиток — 12 BYN', items: ['soup-day', 'kotleta', 'gulyash'] },
+  evening: { name: 'Вечер', icon: 'flame', title: 'Хоспер и концерты', text: 'Стейки на углях и музыкальные вечера на большом экране', items: ['steak-ny', 'salmon', 'ribeye'] },
+} as const
+type TodK = keyof typeof TOD
+function nowTod(): TodK { const t = minsk(); return t.h < 12 ? 'morning' : t.h < 15 && !t.weekend ? 'day' : 'evening' }
+
+export function Today() {
+  const [k, setK] = useState<TodK>(nowTod)
+  const cur = useMemo(nowTod, [])
+  const { open } = useStore()
+  const T = TOD[k]
+  return (
+    <section className="mx-auto max-w-[1320px] px-4 pt-14 lg:px-10 lg:pt-24" aria-labelledby="today-h">
+      <Reveal className="flex flex-wrap items-end justify-between gap-4">
+        <div><div className="text-[12px] font-extrabold tracking-[.16em] text-crimson uppercase">Сегодня в Фасоли</div>
+          <h2 id="today-h" className="mt-3 font-serif text-[36px] leading-[1.04] font-medium tracking-[-.02em] lg:text-[56px]">Утро, день <em className="font-normal">и вечер</em></h2></div>
+        <div role="tablist" aria-label="Время дня" className="relative flex rounded-full bg-white p-1 shadow-[inset_0_0_0_1px_var(--color-line)]">
+          <LayoutGroup id="tod">
+            {(Object.keys(TOD) as TodK[]).map((x) => (
+              <button key={x} role="tab" aria-selected={k === x} type="button" onClick={() => setK(x)} className={`relative h-11 rounded-full px-4 text-[14px] font-bold transition-colors lg:px-5 ${k === x ? 'text-white' : 'text-ink2 hover:text-ink'}`}>
+                {k === x && <motion.span layoutId="tod-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
+                <span className="relative inline-flex items-center gap-1.5"><Icon n={TOD[x].icon} s={15} />{TOD[x].name}{x === cur && <i className="size-1.5 rounded-full bg-crimson" aria-label="сейчас" />}</span>
+              </button>
+            ))}
+          </LayoutGroup>
+        </div>
+      </Reveal>
+
+      <div className="mt-8 grid gap-3 lg:mt-10 lg:grid-cols-12 lg:gap-5">
+        <Reveal className="lg:col-span-7">
+          <div className="h-full rounded-[28px] bg-white p-5 shadow-[inset_0_0_0_1px_var(--color-line)] lg:p-8">
+            <motion.div key={k} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE_IO }}>
+              <div className="text-[12px] font-extrabold tracking-[.14em] text-crimson uppercase">{k === cur ? 'Сейчас' : TOD[k].name}</div>
+              <h3 className="mt-2 font-serif text-[28px] font-medium tracking-[-.015em] lg:text-[36px]">{T.title}</h3>
+              <p className="mt-1.5 text-[15px] text-ink2">{nb(T.text)}</p>
+              <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
+                {T.items.map((id, i) => (
+                  <motion.button key={id} type="button" onClick={() => open({ kind: 'dish', id })} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE_IO, delay: i * 0.07 }}
+                    className="group flex items-center gap-3 rounded-2xl bg-porc p-2.5 text-left transition hover:bg-plate sm:flex-col sm:items-start">
+                    <span className="relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-plate sm:aspect-square sm:size-auto sm:w-full">{DISH[id].full ? <img src={DISH[id].img} alt="" className="absolute inset-0 size-full object-cover" /> : <img src={DISH[id].img} alt="" loading="lazy" className="plate-img w-[86%]" />}</span>
+                    <span className="sm:px-1 sm:pb-1"><b className="block font-serif text-[16px] leading-tight font-medium">{nb(DISH[id].name)}</b><Price v={DISH[id].price} per100={DISH[id].per100} className="mt-1 block text-[14px]" /></span>
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </Reveal>
+        <Reveal delay={0.08} className="lg:col-span-5">
+          <a href="#cat-grill" className="group relative block h-[300px] overflow-hidden rounded-[28px] bg-ink text-white lg:h-full lg:min-h-[420px]">
+            <img src="img/sq-steak-ny.webp" alt="" loading="lazy" className="absolute inset-0 size-full object-cover opacity-90 transition duration-[1.4s] ease-[var(--ease-out-soft)] group-hover:scale-105" />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,12,10,.9)_0%,rgba(20,12,10,.2)_55%,rgba(20,12,10,0)_100%)]" />
+            <span className="absolute top-4 left-4 inline-flex h-9 items-center gap-1.5 rounded-full bg-black/35 px-3.5 text-[14px] font-extrabold backdrop-blur-md"><Icon n="flame" s={15} className="text-[#FF9A5C]" />350°</span>
+            <div className="absolute inset-x-5 bottom-5 lg:inset-x-7 lg:bottom-7">
+              <div className="text-[12px] font-extrabold tracking-[.16em] uppercase opacity-85">Хоспер-гриль</div>
+              <h3 className="mt-2 font-serif text-[30px] leading-[1.05] font-medium lg:text-[40px]">Фа, соль и{NB}немного <em className="font-normal">огня</em></h3>
+              <span className="mt-3 inline-flex items-center gap-1.5 text-[15px] font-bold">Меню гриля<Icon n="arrow" s={16} className="transition-transform group-hover:translate-x-1" /></span>
+            </div>
+          </a>
+        </Reveal>
+        <Reveal delay={0.04} className="lg:col-span-4">
+          <div className="flex h-full flex-col justify-between rounded-[28px] bg-crimson p-6 text-white lg:p-8">
+            <div className="text-[12px] font-extrabold tracking-[.16em] uppercase opacity-85">Яндекс Карты</div>
+            <div className="mt-6 flex items-end gap-3"><b className="font-serif text-[76px] leading-none font-medium lg:text-[96px]">5,0</b><span className="mb-3 flex gap-0.5 text-[#F4C04E]">{[0, 1, 2, 3, 4].map((i) => <Icon key={i} n="star" s={16} />)}</span></div>
+            <p className="mt-2 text-[15px] text-white/85">{nb('5 651 оценка. Гости чаще всего хвалят суп из красной фасоли, стейки и наш хлеб')}</p>
+          </div>
+        </Reveal>
+        <Reveal delay={0.08} className="lg:col-span-4">
+          <Tile img="img/int-kids.webp" kick="Для семьи" title="Детская комната" text="Игровая с аниматором: взрослые ужинают, дети играют" />
+        </Reveal>
+        <Reveal delay={0.12} className="lg:col-span-4">
+          <Tile img="img/int-screen.webp" kick="Пт и сб с 19:00" title="Музыкальные вечера" text="Концерты на большом экране в нашем зале" />
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+function Tile({ img, kick, title, text }: { img: string; kick: string; title: string; text: string }) {
+  return (
+    <div className="group relative h-[260px] overflow-hidden rounded-[28px] bg-ink text-white lg:h-[300px]">
+      <img src={img} alt="" loading="lazy" className="absolute inset-0 size-full object-cover transition duration-[1.4s] ease-[var(--ease-out-soft)] group-hover:scale-105" />
+      <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,12,10,.88)_0%,rgba(20,12,10,.15)_60%,rgba(20,12,10,0)_100%)]" />
+      <div className="absolute inset-x-5 bottom-5 lg:inset-x-6 lg:bottom-6">
+        <div className="text-[12px] font-extrabold tracking-[.14em] uppercase opacity-85">{kick}</div>
+        <h3 className="mt-1.5 font-serif text-[26px] leading-tight font-medium">{title}</h3>
+        <p className="mt-1 text-[14px] text-white/85">{nb(text)}</p>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- витрина меню ---------- */
+export function DishCard({ id, i }: { id: string; i: number }) {
+  const d = DISH[id]
+  const { qty, changeById, add, open } = useStore()
+  const q = qty(id)
+  const imgRef = useRef<HTMLImageElement>(null)
+  const plus = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const r = imgRef.current?.getBoundingClientRect()
+    add(id, [], 1, r ? { src: d.img, rect: r } : undefined)
+  }
+  return (
+    <motion.article initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '0px 0px -8% 0px' }} transition={{ duration: 0.8, ease: EASE_IO, delay: (i % 4) * 0.06 }}
+      className={`group relative flex flex-col overflow-hidden rounded-[22px] bg-white transition-shadow duration-300 hover:shadow-float ${q ? 'shadow-[inset_0_0_0_1.5px_var(--color-crimson)]' : 'shadow-[inset_0_0_0_1px_var(--color-line)]'}`}>
+      <button type="button" onClick={() => open({ kind: 'dish', id })} className="relative grid aspect-square place-items-center overflow-hidden bg-plate text-left" aria-label={`${d.name}, подробнее`}>
+        {d.tag && <span className="absolute top-2.5 left-2.5 z-10 rounded-full bg-white/80 px-2.5 py-1 text-[10px] font-extrabold tracking-[.08em] uppercase backdrop-blur lg:top-3 lg:left-3 lg:text-[11px]">{d.tag}</span>}
+        {d.full
+          ? <img ref={imgRef} src={d.img} alt="" loading="lazy" className={`absolute inset-0 size-full object-cover transition duration-[1.2s] ease-[var(--ease-out-soft)] group-hover:scale-105 ${d.stop ? 'opacity-50 grayscale' : ''}`} />
+          : <img ref={imgRef} src={d.img} alt="" loading="lazy" className={`plate-img w-[88%] ${d.stop ? 'opacity-45 grayscale' : ''}`} />}
+      </button>
+      <div className="flex flex-1 flex-col p-3 lg:p-4">
+        <button type="button" onClick={() => open({ kind: 'dish', id })} className="text-left">
+          <h3 className="line-clamp-2 text-[15px] leading-[1.25] font-semibold lg:text-[16px]">{nb(d.name)}</h3>
+          <p className="mt-1 line-clamp-1 hidden text-[13px] text-mute lg:block">{d.desc}</p>
+          <span className="mt-1 block text-[12px] font-semibold text-mute">{d.per100 ? 'на вес' : d.weight}</span>
+        </button>
+        <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+          <Price v={d.price} per100={d.per100} className={`text-[16px] ${d.stop ? 'text-mute' : ''}`} />
+          {d.stop ? <span className="rounded-full bg-porc px-3 py-2 text-[11px] font-extrabold tracking-wide text-mute uppercase">Нет сегодня</span>
+            : q ? <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 420, damping: 26 }}><Stepper q={q} onDec={() => changeById(id, -1)} onInc={() => changeById(id, 1)} label={d.name} size="sm" /></motion.div>
+              : <button type="button" onClick={plus} aria-label={`Добавить: ${d.name}`} className="grid size-10 place-items-center rounded-full bg-crimson text-white shadow-[0_8px_18px_-8px_rgba(174,22,61,.9)] transition hover:bg-crimson-d active:scale-90 lg:size-11"><Icon n="plus" s={20} w={2.4} /></button>}
+        </div>
+      </div>
+    </motion.article>
+  )
+}
+
+export function Menu() {
+  const [active, setActive] = useState(CATS[0].id)
+  const [q, setQ] = useState('')
+  const [search, setSearch] = useState(false)
+  const jumping = useRef(false)
+  const bar = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const io = new IntersectionObserver((es) => { if (jumping.current) return; es.forEach((e) => e.isIntersecting && setActive(e.target.id.slice(4))) }, { rootMargin: '-30% 0px -65% 0px' })
+    CATS.forEach((c) => { const el = document.getElementById('cat-' + c.id); if (el) io.observe(el) })
+    return () => io.disconnect()
+  }, [q])
+  useEffect(() => { bar.current?.querySelector<HTMLElement>(`[data-c="${active}"]`)?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }) }, [active])
+
+  const go = (id: string) => {
+    setActive(id); jumping.current = true
+    document.getElementById('cat-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setTimeout(() => { jumping.current = false }, 900)
+  }
+  const norm = (s: string) => s.toLowerCase().replace(/ё/g, 'е')
+  const found = q.trim().length > 1 ? Object.values(DISH).filter((d) => {
+    const hay = norm(d.name + ' ' + d.desc + (CATS.find((c) => c.items.includes(d.id))?.id === 'grill' ? ' хоспер гриль стейк' : ''))
+    return norm(q).split(/\s+/).every((w) => hay.includes(w) || (w.length > 3 && hay.split(/\s+/).some((t) => lev(w, t.slice(0, w.length)) <= 1)))
+  }) : null
+
+  return (
+    <section id="menu" className="mt-20 lg:mt-28" aria-label="Меню">
+      <div className="mx-auto max-w-[1320px] px-4 lg:px-10">
+        <Reveal><div className="text-[12px] font-extrabold tracking-[.16em] text-crimson uppercase">Меню</div>
+          <h2 className="mt-3 font-serif text-[36px] leading-[1.04] font-medium tracking-[-.02em] lg:text-[56px]">Закажите с{NB}собой <em className="font-normal">или{NB}за{NB}столом</em></h2>
+          <p className="mt-3 max-w-[560px] text-[15px] text-ink2 lg:text-[17px]">{nb('Соберите заказ — администратор перезвонит и подтвердит. Оплата на месте, с собой −20 %')}</p></Reveal>
+      </div>
+      <div className="menu-bar sticky top-0 z-30 mt-6 border-b border-line bg-porc/85 backdrop-blur-xl backdrop-saturate-150">
+        <div className="mx-auto flex max-w-[1320px] items-center gap-2 px-4 lg:px-10">
+          {search ? (
+            <motion.label initial={{ opacity: 0, width: '40%' }} animate={{ opacity: 1, width: '100%' }} className="my-2 flex h-11 items-center gap-2 rounded-full bg-white px-4 text-mute shadow-[inset_0_0_0_1px_var(--color-line)]">
+              <Icon n="search" s={18} />
+              <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Например, лосось" aria-label="Поиск по меню" className="min-w-0 flex-1 bg-transparent text-[16px] font-semibold text-ink outline-none" />
+              <button type="button" onClick={() => { setSearch(false); setQ('') }} aria-label="Закрыть поиск" className="grid size-8 place-items-center rounded-full bg-porc text-ink"><Icon n="close" s={16} /></button>
+            </motion.label>
+          ) : <>
+            <div ref={bar} className="flex flex-1 gap-1.5 overflow-x-auto py-2.5 no-scrollbar [mask-image:linear-gradient(90deg,#000_90%,transparent)]">
+              <LayoutGroup id="cats">
+                {CATS.map((c) => (
+                  <button key={c.id} data-c={c.id} type="button" onClick={() => go(c.id)} aria-current={active === c.id} className={`relative h-10 shrink-0 rounded-full px-4 text-[14px] font-bold transition-colors ${active === c.id ? 'text-white' : 'text-ink2 hover:text-ink'}`}>
+                    {active === c.id && <motion.span layoutId="cat-pill" className="absolute inset-0 rounded-full bg-crimson" transition={{ type: 'spring', stiffness: 400, damping: 34 }} />}
+                    <span className="relative">{c.name}</span>
+                  </button>
+                ))}
+              </LayoutGroup>
+            </div>
+            <button type="button" onClick={() => setSearch(true)} aria-label="Поиск по меню" className="grid size-10 shrink-0 place-items-center rounded-full bg-white shadow-[inset_0_0_0_1px_var(--color-line)]"><Icon n="search" s={18} /></button>
+          </>}
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-[1320px] gap-8 px-4 lg:grid-cols-[1fr_360px] lg:gap-10 lg:px-10">
+        <div>
+          {found ? (
+            <div className="pt-6">
+              <p className="mb-4 text-[14px] font-semibold text-ink2" aria-live="polite">{found.length ? `Нашли ${dishes(found.length)}` : 'Ничего не нашли. Попробуйте «стейк», «суп» или «десерт»'}</p>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:gap-5">{found.map((d, i) => <DishCard key={d.id} id={d.id} i={i} />)}</div>
+            </div>
+          ) : CATS.map((c) => (
+            <div key={c.id} id={'cat-' + c.id} className="scroll-mt-20 pt-10 lg:pt-14">
+              <div className="mb-4 flex items-baseline gap-3 lg:mb-6"><h3 className="font-serif text-[26px] font-medium tracking-[-.015em] lg:text-[36px]">{c.name}</h3>{c.note && <span className="text-[13px] font-bold text-mute">{c.note}</span>}</div>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:gap-5">{c.items.map((id, i) => <DishCard key={id} id={id} i={i} />)}</div>
+            </div>
+          ))}
+        </div>
+        <CartPanelSlot />
+      </div>
+    </section>
+  )
+}
+function lev(a: string, b: string) {
+  const d: number[][] = Array.from({ length: a.length + 1 }, (_, i) => [i])
+  for (let j = 1; j <= b.length; j++) d[0][j] = j
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1))
+  return d[a.length][b.length]
+}
+// место под боковую корзину на компьютере — сам компонент в cart.tsx
+import { CartPanel } from './cart'
+function CartPanelSlot() { return <div className="hidden lg:block"><div className="sticky top-24 pt-14"><CartPanel /></div></div> }
+
+/* ---------- о ресторане и подвал ---------- */
+export function About() {
+  return (
+    <section id="about" className="mx-auto mt-24 max-w-[1320px] px-4 lg:mt-36 lg:px-10">
+      <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14">
+        <Reveal className="lg:col-span-7"><div className="relative aspect-[4/3] overflow-hidden rounded-[28px]"><img src="img/int-hall.webp" alt="Зал ресторана" loading="lazy" className="size-full object-cover" /></div></Reveal>
+        <Reveal delay={0.1} className="lg:col-span-5">
+          <div className="text-[12px] font-extrabold tracking-[.16em] text-crimson uppercase">О ресторане</div>
+          <h2 className="mt-3 font-serif text-[34px] leading-[1.06] font-medium tracking-[-.02em] lg:text-[48px]">Два этажа в{NB}сердце <em className="font-normal">Гомеля</em></h2>
+          <p className="mt-4 text-[16px] leading-relaxed text-ink2 lg:text-[17px]">{nb('Международная кухня, свой хлеб и печь-гриль Хоспер. Днём — завтраки и бизнес-ланчи, вечером — стейки и музыка. Детская комната с аниматором, летом — терраса')}</p>
+          <dl className="mt-7 grid grid-cols-3 gap-3 border-t border-line pt-6">
+            {[['5,0', 'на Яндексе'], ['15', 'лет группе'], ['350°', 'в Хоспере']].map(([v, l]) => <div key={l}><dt className="font-serif text-[34px] leading-none font-medium lg:text-[44px]">{v}</dt><dd className="mt-1.5 text-[13px] font-semibold text-mute">{l}</dd></div>)}
+          </dl>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+export function Footer() {
+  const { open } = useStore()
+  return (
+    <footer id="contacts" className="mt-24 bg-ink pt-16 pb-[calc(140px+env(safe-area-inset-bottom))] text-white lg:mt-36 lg:pb-14">
+      <div className="mx-auto max-w-[1320px] px-4 lg:px-10">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div><Logo className="h-14 w-auto lg:h-16" /><span className="mt-2 ml-12 block font-script text-[30px] text-white/85 lg:text-[40px]">просто люби…</span></div>
+          <div className="flex gap-2.5"><BookBtnLight /></div>
+        </div>
+        <div className="mt-12 grid gap-8 border-t border-white/15 pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div><h3 className="text-[12px] font-extrabold tracking-[.16em] text-white/55 uppercase">Адрес</h3><p className="mt-3 text-[16px] font-semibold">Советская, 36<br /><span className="font-medium text-white/75">Гомель, центр</span></p></div>
+          <div><h3 className="text-[12px] font-extrabold tracking-[.16em] text-white/55 uppercase">Часы</h3><p className="mt-3 text-[16px] font-semibold">Пн–пт 9:00–23:00<br />Сб–вс 10:00–23:00<br /><span className="font-medium text-white/75">Бизнес-ланч пн–пт 12–15</span></p></div>
+          <div><h3 className="text-[12px] font-extrabold tracking-[.16em] text-white/55 uppercase">Телефоны</h3><p className="mt-3 text-[16px] font-semibold"><a href="tel:+375447903333">+375 44 790-33-33</a><br /><a href="tel:+375232221468" className="font-medium text-white/75">+375 232 22-14-68</a></p></div>
+          <div><h3 className="text-[12px] font-extrabold tracking-[.16em] text-white/55 uppercase">Ещё</h3>
+            <div className="mt-3 flex flex-col items-start gap-2 text-[16px] font-semibold">
+              <button type="button" onClick={() => open({ kind: 'info', topic: 'cert' })} className="hover:text-white/80">Подарочные сертификаты</button>
+              <button type="button" onClick={() => open({ kind: 'info', topic: 'office' })} className="hover:text-white/80">Обеды в офис</button>
+              <a href="https://instagram.com/fasol.gomel" target="_blank" rel="noopener" className="hover:text-white/80">Instagram @fasol.gomel</a>
+            </div></div>
+        </div>
+        <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/15 pt-6 text-[13px] text-white/60">
+          <span>© Фасоль, ООО «Орион Холл»</span><span className="ml-auto">Сайт — Елена Саманчук</span>
+          <span className="w-full text-[12px] text-white/50">Демо-версия: цены, вес и КБЖУ — примеры, заказы и брони никуда не отправляются</span>
+        </div>
+      </div>
+    </footer>
+  )
+}
+function BookBtnLight() {
+  const { open } = useStore()
+  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-14 items-center gap-2 rounded-full bg-white px-7 text-[16px] font-bold text-crimson transition hover:bg-porc"><Icon n="cal" s={18} />Забронировать стол</button>
+}
