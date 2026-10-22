@@ -5,10 +5,10 @@
   --color-crimson: #AE163D;
   --color-crimson-d: #921133;
   --color-ink: #1F1715;
-  --color-ink2: #4A3F3B;
-  --color-mute: #7A6E69;
-  --color-porc: #F7F1EA;
-  --color-plate: #F2E9DF;
+  --color-ink2: #4A4441;
+  --color-mute: #77706C;
+  --color-porc: #FAF8F6;
+  --color-plate: #F3EFEB;
   --color-line: rgb(31 23 21 / 0.08);
   --font-serif: "Lora", Georgia, serif;
   --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
@@ -19,7 +19,7 @@
 }
 
 @layer base {
-  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 132px; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 132px; scroll-behavior: smooth; }
   body { @apply bg-porc text-ink font-sans antialiased; overflow-x: clip; }
   :focus-visible { outline: 2.5px solid var(--color-crimson); outline-offset: 3px; border-radius: 10px; }
   button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -40,12 +40,14 @@ main img:not(.is-in) { opacity: 0; }
 main img { transition: opacity .5s var(--ease-io); }
 
 /* карточка блюда: чистая мягкая тень и подъём с плавным началом и завершением */
-.card { box-shadow: inset 0 0 0 1px var(--color-line), 0 2px 6px rgb(31 23 21 / 0), 0 18px 36px -16px rgb(31 23 21 / 0); transition: transform .55s var(--ease-io), box-shadow .55s var(--ease-io); }
-.card.on { box-shadow: inset 0 0 0 1.5px var(--color-crimson), 0 2px 6px rgb(31 23 21 / 0), 0 18px 36px -16px rgb(31 23 21 / 0); }
+.card { transition: transform .55s var(--ease-io), box-shadow .55s var(--ease-io); box-shadow: 0 2px 6px rgb(31 23 21 / 0), 0 18px 36px -16px rgb(31 23 21 / 0); }
+/* рамка поверх фото — выделяется вся карточка целиком */
+.card::after { content: ''; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--color-line); transition: box-shadow .4s var(--ease-io); }
+.card.on::after { box-shadow: inset 0 0 0 2px var(--color-crimson); }
 @media (hover: hover) {
-  .card:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--color-line), 0 2px 6px rgb(31 23 21 / .04), 0 18px 36px -16px rgb(31 23 21 / .14); }
-  .card.on:hover { box-shadow: inset 0 0 0 1.5px var(--color-crimson), 0 2px 6px rgb(31 23 21 / .04), 0 18px 36px -16px rgb(31 23 21 / .14); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 2px 6px rgb(31 23 21 / .04), 0 18px 36px -16px rgb(31 23 21 / .14); }
 }
+
 
 /* тарелка «стоит» с мягкой тенью */
 .plate-img { filter: drop-shadow(0 14px 14px rgb(31 23 21 / .16)); }

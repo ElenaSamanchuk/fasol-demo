@@ -203,7 +203,7 @@ function CartSheet() {
             {STEPS.map((s, i) => (
               <div key={s.t} className="grid grid-cols-[32px_1fr] gap-3">
                 <div className="flex flex-col items-center">
-                  <motion.span className="grid size-8 place-items-center rounded-full" animate={{ backgroundColor: i <= step ? '#AE163D' : '#F2E9DF', color: i <= step ? '#fff' : '#7A6E69', scale: i === step ? [1, 1.12, 1] : 1 }} transition={{ duration: 0.5 }}>
+                  <motion.span className="grid size-8 place-items-center rounded-full" animate={{ backgroundColor: i <= step ? '#AE163D' : '#F3EFEB', color: i <= step ? '#fff' : '#77706C', scale: i === step ? [1, 1.12, 1] : 1 }} transition={{ duration: 0.5 }}>
                     {i < step ? <Icon n="check" s={16} w={2.6} /> : <b className="text-[13px]">{i + 1}</b>}
                   </motion.span>
                   {i < 2 && <span className="my-1 w-0.5 flex-1 rounded bg-plate"><motion.span className="block w-full rounded bg-crimson" initial={{ height: 0 }} animate={{ height: i < step ? '100%' : '0%' }} transition={{ duration: 0.6, ease: EASE }} /></span>}
