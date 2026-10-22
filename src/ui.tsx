@@ -53,7 +53,7 @@ export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: num
   const h = size === 'lg' ? 'h-14' : size === 'sm' ? 'h-10' : 'h-11'
   const b = size === 'lg' ? 'size-12' : size === 'sm' ? 'size-9' : 'size-10'
   return (
-    <span className={`inline-flex items-center rounded-full px-0.5 ${h} ${light ? 'bg-porc text-ink' : 'bg-ink text-white'}`}>
+    <span className={`inline-flex items-center rounded-full px-0.5 ${h} ${light ? 'bg-plate text-ink' : 'bg-crimson text-white'}`}>
       <button type="button" onClick={(e) => { e.stopPropagation(); onDec() }} aria-label={`Меньше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="minus" s={18} w={2.2} /></button>
       <b className="min-w-5 text-center text-[15px] font-extrabold tabular-nums"><Roll value={q} /></b>
       <button type="button" onClick={(e) => { e.stopPropagation(); onInc() }} aria-label={`Больше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="plus" s={18} w={2.2} /></button>
@@ -64,7 +64,7 @@ export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: num
 export function Chip({ on, children, onClick, sub }: { on?: boolean; children: ReactNode; onClick?: () => void; sub?: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={!!on}
-      className={`shrink-0 rounded-xl px-3.5 text-[14px] font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-ink text-white ring-1 ring-ink ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
+      className={`shrink-0 rounded-xl px-3.5 text-[14px] font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-crimson-50 text-crimson ring-[1.5px] ring-crimson ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
       {children}{sub && <small className="mt-0.5 block text-[11px] font-medium opacity-65">{sub}</small>}
     </button>
   )

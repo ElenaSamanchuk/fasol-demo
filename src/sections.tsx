@@ -93,7 +93,7 @@ export function Today() {
           <LayoutGroup id="tod">
             {(Object.keys(TOD) as TodK[]).map((x) => (
               <button key={x} role="tab" aria-selected={k === x} type="button" onClick={() => setK(x)} className={`relative h-11 rounded-full px-4 text-[14px] font-bold transition-colors lg:px-5 ${k === x ? 'text-white' : 'text-ink2 hover:text-ink'}`}>
-                {k === x && <motion.span layoutId="tod-pill" className="absolute inset-0 rounded-full bg-ink" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
+                {k === x && <motion.span layoutId="tod-pill" className="absolute inset-0 rounded-full bg-crimson" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
                 <span className="relative inline-flex items-center gap-1.5"><Icon n={TOD[x].icon} s={15} />{TOD[x].name}{x === cur && <i className="size-1.5 rounded-full bg-crimson" aria-label="сейчас" />}</span>
               </button>
             ))}
@@ -192,7 +192,7 @@ export function DishCard({ id, i }: { id: string; i: number }) {
         <div className="mt-auto flex min-h-11 flex-wrap items-center justify-between gap-x-2 gap-y-2 pt-3">
           <Price v={d.price} className={`text-[16px] ${d.stop ? 'text-mute' : ''}`} />
           {d.stop ? <span className="rounded-full bg-porc px-3 py-2 text-[11px] font-extrabold tracking-wide text-mute uppercase">Нет сегодня</span>
-            : q ? <motion.div className="shrink-0" initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35, ease: [0.45, 0, 0.2, 1] }}><Stepper q={q} onDec={() => changeById(id, -1)} onInc={() => changeById(id, 1)} label={d.name} size="sm" /></motion.div>
+            : q ? <motion.div className="shrink-0 overflow-hidden rounded-full" initial={{ opacity: 0, width: 40 }} animate={{ opacity: 1, width: 'auto' }} transition={{ duration: 0.4, ease: [0.45, 0, 0.2, 1] }}><Stepper q={q} onDec={() => changeById(id, -1)} onInc={() => changeById(id, 1)} label={d.name} size="sm" /></motion.div>
               : <button type="button" onClick={plus} aria-label={`Добавить: ${d.name}`} className="grid size-10 shrink-0 place-items-center rounded-full bg-crimson text-white transition-colors duration-300 hover:bg-crimson-d active:scale-95 lg:size-11"><Icon n="plus" s={20} w={2.4} /></button>}
         </div>
       </div>
@@ -337,5 +337,5 @@ export function Footer() {
 }
 function BookBtnLight() {
   const { open } = useStore()
-  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-14 items-center gap-2 rounded-full bg-white px-7 text-[16px] font-bold text-crimson transition hover:bg-porc"><Icon n="cal" s={18} />Забронировать стол</button>
+  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-[14px] font-bold text-crimson transition-colors duration-300 hover:bg-porc lg:h-12 lg:px-6 lg:text-[15px]"><Icon n="cal" s={16} />Забронировать стол</button>
 }

@@ -59,7 +59,7 @@ export function CartIsland() {
   const { scrollY } = useScroll()
   const [past, setPast] = useState(false)
   useMotionValueEvent(scrollY, 'change', (y) => { const v = y > window.innerHeight * 0.55; if (v !== past) setPast(v) })
-  useEffect(() => { if (fly) setTimeout(() => ctl.start({ scale: [1, 1.06, 1], transition: { duration: 0.32 } }), 640) }, [fly, ctl])
+  useEffect(() => { if (fly) setTimeout(() => ctl.start({ scale: [1, 1.03, 1], transition: { duration: 0.45, ease: [0.45, 0, 0.2, 1] } }), 700) }, [fly, ctl])
   if (desk) return null
   return (
     <AnimatePresence>
@@ -88,19 +88,19 @@ export function FlyLayer() {
       const target = document.getElementById(matchMedia('(min-width: 1024px)').matches ? 'cart-target-desk' : 'cart-target-mob')
       if (!target) return
       const b = target.getBoundingClientRect(), a = fly.from
-      const s = Math.min(a.width, 120)
-      setShot({ src: fly.src, x0: a.left + a.width / 2 - s / 2, y0: a.top + a.height / 2 - s / 2, x1: b.left + (b.width > 200 ? 60 : b.width / 2) - s / 2, y1: b.top + (b.width > 200 ? 40 : b.height / 2) - s / 2, s, n: fly.n })
+      const s = Math.min(a.width * 0.6, 72)
+      setShot({ src: fly.src, x0: a.left + a.width / 2 - s / 2, y0: a.top + a.height / 2 - s / 2, x1: b.left + (b.width > 200 ? 48 : b.width / 2) - s / 2, y1: b.top + (b.width > 200 ? 36 : b.height / 2) - s / 2, s, n: fly.n })
     }, 60)
     return () => clearTimeout(t)
   }, [fly])
   return (
     <AnimatePresence>
       {shot && (
-        <motion.img key={shot.n} src={shot.src} alt="" aria-hidden className="pointer-events-none fixed top-0 left-0 z-[70] rounded-full object-cover"
+        <motion.img key={shot.n} src={shot.src} alt="" aria-hidden className="pointer-events-none fixed top-0 left-0 z-[70] object-contain"
           style={{ width: shot.s, height: shot.s, filter: 'drop-shadow(0 12px 14px rgba(31,23,21,.3))' }}
-          initial={{ x: shot.x0, y: shot.y0, scale: 1, rotate: 0, opacity: 1 }}
-          animate={{ x: [shot.x0, (shot.x0 + shot.x1) / 2, shot.x1], y: [shot.y0, Math.min(shot.y0, shot.y1) - 110, shot.y1], scale: [1, 0.7, 0.22], rotate: [0, 20, 45], opacity: [1, 1, 0.3] }}
-          transition={{ duration: 0.7, ease: [0.5, 0, 0.3, 1] }}
+          initial={{ x: shot.x0, y: shot.y0, scale: 1, opacity: 0 }}
+          animate={{ x: [shot.x0, shot.x0 + (shot.x1 - shot.x0) * 0.5, shot.x1], y: [shot.y0, Math.min(shot.y0, shot.y1) - 40, shot.y1], scale: [1, 0.75, 0.35], opacity: [0, 1, 0] }}
+          transition={{ duration: 0.75, ease: [0.45, 0, 0.2, 1], times: [0, 0.45, 1] }}
           onAnimationComplete={() => setShot(null)} />
       )}
     </AnimatePresence>
