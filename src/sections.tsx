@@ -17,13 +17,13 @@ export function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-40 transition-[background-color,color,box-shadow] duration-500 ease-[cubic-bezier(.45,0,.2,1)] ${solid ? 'bg-porc text-ink shadow-[0_1px_0_var(--color-line)]' : 'text-white'}`}>
       <div className="mx-auto flex h-16 max-w-[1320px] items-center gap-8 px-4 lg:h-20 lg:px-10">
-        <a href="#top" aria-label="Фасоль — наверх" className={`transition-colors ${solid ? 'text-crimson' : 'text-white'}`}><Logo className="h-8 w-auto lg:h-11" /></a>
+        <a href="#top" aria-label="Фасоль — наверх" className={`transition-colors ${solid ? 'text-crimson' : 'text-white'}`}><Logo className="h-9 w-auto lg:h-11" /></a>
         <nav className="hidden gap-7 text-[15px] font-semibold lg:flex" aria-label="Разделы">
           {nav.map(([t, h]) => <a key={h} href={h} className="relative py-2 opacity-90 transition hover:opacity-100 after:absolute after:inset-x-0 after:bottom-0 after:h-[1.5px] after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100">{t}</a>)}
         </nav>
         <div className="ml-auto flex items-center gap-2.5">
           <a href="tel:+375447903333" className={`hidden h-11 items-center gap-2 rounded-full px-4 text-[15px] font-bold ring-[1.5px] ring-current ring-inset transition xl:inline-flex ${solid ? 'ring-ink/15' : ''}`}><Icon n="phone" s={17} />+375 44 790-33-33</a>
-          <a href="tel:+375447903333" aria-label="Позвонить" className={`grid size-11 place-items-center rounded-full ring-[1.5px] ring-current ring-inset xl:hidden ${solid ? 'text-crimson ring-crimson/25' : ''}`}><Icon n="phone" s={18} /></a>
+          <a href="tel:+375447903333" aria-label="Позвонить" className={`grid size-9 place-items-center rounded-full ring-1 ring-inset transition-colors duration-500 xl:hidden ${solid ? 'text-crimson ring-crimson/25' : 'ring-white/60'}`}><Icon n="phone" s={15} /></a>
           <button type="button" onClick={() => open({ kind: 'book' })} className="hidden h-11 items-center gap-2 rounded-full bg-crimson px-5 text-[15px] font-bold text-white transition hover:bg-crimson-d lg:inline-flex"><Icon n="cal" s={17} />Забронировать стол</button>
         </div>
       </div>

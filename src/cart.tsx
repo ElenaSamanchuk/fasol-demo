@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useAnimationControls } from 'motion/react'
+import { AnimatePresence, motion, useAnimationControls, useMotionValueEvent, useScroll } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { ADDS, DISH, dishes, money, nb, NB } from './data'
 import { Icon } from './icons'
@@ -55,11 +55,15 @@ export function CartIsland() {
   const { count, total, open, sheet, fly } = useStore()
   const desk = useDesktop()
   const ctl = useAnimationControls()
+  // на первом экране остров не показываем — он закрыл бы текст и кнопки
+  const { scrollY } = useScroll()
+  const [past, setPast] = useState(false)
+  useMotionValueEvent(scrollY, 'change', (y) => { const v = y > window.innerHeight * 0.55; if (v !== past) setPast(v) })
   useEffect(() => { if (fly) setTimeout(() => ctl.start({ scale: [1, 1.06, 1], transition: { duration: 0.32 } }), 640) }, [fly, ctl])
   if (desk) return null
   return (
     <AnimatePresence>
-      {count > 0 && !sheet && (
+      {count > 0 && !sheet && past && (
         <motion.button type="button" onClick={() => open({ kind: 'cart' })} initial={{ y: 90, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 90, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
           className="fixed inset-x-4 bottom-[calc(76px+env(safe-area-inset-bottom))] z-40">

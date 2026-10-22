@@ -64,14 +64,14 @@ export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: num
 export function Chip({ on, children, onClick, sub }: { on?: boolean; children: ReactNode; onClick?: () => void; sub?: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={!!on}
-      className={`shrink-0 rounded-full px-4 text-[14px] font-bold transition duration-200 active:scale-95 ${sub ? 'h-14' : 'h-11'} ${on ? 'bg-ink text-white' : 'bg-porc text-ink hover:bg-plate'}`}>
-      {children}{sub && <small className="mt-0.5 block text-[11px] font-semibold opacity-70">{sub}</small>}
+      className={`shrink-0 rounded-xl px-3.5 text-[14px] font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-ink text-white ring-1 ring-ink ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
+      {children}{sub && <small className="mt-0.5 block text-[11px] font-medium opacity-65">{sub}</small>}
     </button>
   )
 }
 
 export function Label({ children }: { children: ReactNode }) {
-  return <div className="mt-6 mb-2.5 text-[12px] font-extrabold uppercase tracking-[.1em] text-mute">{children}</div>
+  return <div className="mt-5 mb-2 text-[14px] font-semibold text-ink">{children}</div>
 }
 
 // Маска +375 (29) 123-45-67: скобки и дефисы появляются только когда есть следующая цифра
@@ -89,13 +89,13 @@ export function telMask(v: string) {
 export function PhoneField({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: string }) {
   return (
     <>
-      <label className="flex h-13 items-center gap-2.5 rounded-2xl bg-porc px-4 text-mute ring-crimson/0 transition focus-within:ring-[1.5px] focus-within:ring-crimson">
+      <label className="flex h-12 items-center gap-2.5 rounded-xl bg-white px-4 text-mute ring-1 ring-[#E3DDD8] ring-inset transition-shadow focus-within:ring-[1.5px] focus-within:ring-crimson">
         <Icon n="phone" s={18} />
         <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+375 (29) 123-45-67" value={value}
           onChange={(e) => onChange(telMask(e.target.value).v)} aria-invalid={!!error} aria-describedby="tel-err"
-          className="min-w-0 flex-1 bg-transparent text-[16px] font-bold tracking-wide text-ink outline-none placeholder:font-semibold placeholder:text-mute/70" />
+          className="min-w-0 flex-1 bg-transparent text-[16px] font-medium tracking-wide text-ink outline-none placeholder:text-mute/70" />
       </label>
-      <p id="tel-err" role="alert" className="mt-2 min-h-4 text-[13px] font-semibold text-crimson">{error}</p>
+      <p id="tel-err" role="alert" className={`text-[13px] font-semibold text-crimson ${error ? "mt-2" : ""}`}>{error}</p>
     </>
   )
 }

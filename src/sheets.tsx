@@ -7,7 +7,7 @@ import { lineUnit, useStore } from './store'
 import { Chip, EASE, Label, PhoneField, Price, Stepper, telMask, useDesktop } from './ui'
 
 /* Шторка на телефоне (vaul, тянется пальцем) и окно по центру на компьютере */
-function Sheet({ open, onClose, title, children, footer, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode; wide?: boolean }) {
+function Sheet({ open, onClose, title, children, footer, wide, side }: { open: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode; wide?: boolean; side?: boolean }) {
   const desk = useDesktop()
   useEffect(() => {
     if (!desk || !open) return
@@ -32,15 +32,32 @@ function Sheet({ open, onClose, title, children, footer, wide }: { open: boolean
       </Drawer.Root>
     )
   }
+  if (side) {
+    return (
+      <AnimatePresence>
+        {open && (
+          <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={title}>
+            <motion.div className="absolute inset-0 bg-[rgb(20_12_10/.36)]" onClick={onClose}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease: [0.45, 0, 0.2, 1] }} />
+            <motion.div className="absolute inset-y-0 right-0 flex w-[460px] flex-col bg-white shadow-[-24px_0_60px_-30px_rgba(31,23,21,.35)]"
+              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ duration: 0.45, ease: [0.45, 0, 0.2, 1] }}>
+              <div className="flex-1 overflow-y-auto overscroll-contain px-7 pt-6 pb-6">{children}</div>
+              {footer && <div className="shrink-0 border-t border-line bg-white px-7 py-5">{footer}</div>}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    )
+  }
   return (
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 grid place-items-center p-6" role="dialog" aria-modal="true" aria-label={title}>
           <motion.div className="absolute inset-0 bg-[rgb(20_12_10/.42)] backdrop-blur-[3px]" onClick={onClose}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} />
-          <motion.div className={`relative flex max-h-[min(860px,calc(100svh-48px))] w-full flex-col overflow-hidden rounded-[32px] bg-white shadow-float ${wide ? 'max-w-[920px]' : 'max-w-[520px]'}`}
-            initial={{ opacity: 0, y: 28, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 32 }}>
+          <motion.div className={`relative flex max-h-[min(860px,calc(100svh-48px))] w-full flex-col overflow-hidden rounded-[28px] bg-white shadow-float ${wide ? 'max-w-[920px]' : 'max-w-[520px]'}`}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.4, ease: [0.45, 0, 0.2, 1] }}>
             <div className="flex-1 overflow-y-auto overscroll-contain p-6">{children}</div>
             {footer && <div className="shrink-0 border-t border-line bg-white px-6 py-4">{footer}</div>}
           </motion.div>
@@ -52,8 +69,8 @@ function Sheet({ open, onClose, title, children, footer, wide }: { open: boolean
 
 function CloseBtn({ onClick, light }: { onClick: () => void; light?: boolean }) {
   return (
-    <button type="button" onClick={onClick} aria-label="Закрыть" className={`grid size-11 shrink-0 place-items-center rounded-full transition active:scale-90 ${light ? 'bg-white shadow-float' : 'bg-porc hover:bg-plate'}`}>
-      <Icon n="close" s={18} />
+    <button type="button" onClick={onClick} aria-label="Закрыть" className={`grid size-10 shrink-0 place-items-center rounded-full transition-colors duration-300 ${light ? 'bg-white/90 shadow-[0_2px_10px_rgba(31,23,21,.12)] hover:bg-white' : 'bg-plate hover:bg-[#ECE6E1]'}`}>
+      <Icon n="close" s={16} w={2.2} />
     </button>
   )
 }
@@ -62,7 +79,7 @@ function DishPic({ id, big }: { id: string; big?: boolean }) {
   const d = DISH[id]
   return d.full
     ? <img src={d.img} alt="" className="absolute inset-0 size-full object-cover" />
-    : <img src={d.img} alt="" className={`plate-img relative ${big ? 'w-[72%]' : 'w-[88%]'}`} />
+    : <img src={d.img} alt="" className={`plate-img relative ${big ? 'w-[90%]' : 'w-[88%]'}`} />
 }
 
 /* ---------- блюдо ---------- */
@@ -84,7 +101,7 @@ function DishSheet({ id }: { id: string }) {
   }
 
   const pic = (
-    <div ref={picRef} className={`relative grid place-items-center overflow-hidden rounded-3xl bg-plate ${desk ? 'h-full min-h-[440px]' : 'h-[230px]'}`}>
+    <div ref={picRef} className={`relative grid place-items-center overflow-hidden rounded-3xl bg-plate ${desk ? 'aspect-square self-start' : 'h-[230px]'}`}>
       {d.tag && <span className="absolute top-3 left-3 z-10 rounded-full bg-crimson px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[.08em] text-white">{d.tag}</span>}
       <motion.div className="grid size-full place-items-center" initial={{ scale: 0.86, rotate: -14, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} transition={{ duration: 0.8, ease: EASE }}>
         <DishPic id={id} big />
@@ -195,8 +212,8 @@ function CartSheet() {
       body: (
         <div className="pt-2">
           <div className="flex items-start justify-between gap-3">
-            <div><div className="text-[12px] font-extrabold uppercase tracking-[.12em] text-crimson">Заказ №{order.n}</div>
-              <h2 className="mt-2 font-serif text-[30px] leading-tight font-medium">{STEPS[step].t}</h2></div>
+            <div><div className="text-[14px] font-semibold text-mute">Заказ №{order.n}</div>
+              <h2 className="mt-1.5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">{STEPS[step].t}</h2></div>
             <CloseBtn onClick={close} />
           </div>
           <div className="mt-6 grid gap-0">
@@ -231,7 +248,7 @@ function CartSheet() {
         <div className="py-8 text-center">
           <div className="flex justify-end"><CloseBtn onClick={close} /></div>
           <div className="mx-auto grid size-20 place-items-center rounded-full bg-porc text-crimson"><Icon n="bag" s={32} w={1.8} /></div>
-          <h2 className="mt-5 font-serif text-[26px] font-medium">Здесь появится ваш заказ</h2>
+          <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Здесь появится ваш заказ</h2>
           <p className="mx-auto mt-2 max-w-[300px] text-[15px] text-ink2">{nb('Нажмите «+» у блюда — соберём заказ с собой, оплата на месте')}</p>
         </div>
       ),
@@ -243,8 +260,7 @@ function CartSheet() {
     body: (
       <div>
         <div className="flex items-start justify-between gap-3">
-          <div><div className="text-[12px] font-extrabold uppercase tracking-[.12em] text-crimson">Заказ с собой</div>
-            <h2 className="mt-1.5 font-serif text-[30px] leading-tight font-medium">Ваш заказ <span className="font-sans text-[15px] font-semibold text-mute">{dishes(count)}</span></h2></div>
+          <div><h2 className="font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Ваш заказ</h2><p className="mt-1 text-[14px] font-medium text-mute">С собой · {dishes(count)}</p></div>
           <CloseBtn onClick={close} />
         </div>
         <ul className="mt-3">
@@ -263,15 +279,15 @@ function CartSheet() {
           </AnimatePresence>
         </ul>
         <Label>Когда заберёте</Label>
-        {!sl.asap && <p className="mb-2.5 rounded-2xl bg-porc px-3.5 py-3 text-[14px] font-semibold text-ink2">{nb('Сейчас закрыто — приготовим к открытию')}</p>}
+        {!sl.asap && <p className="mb-2.5 rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('Сейчас закрыто — приготовим к открытию')}</p>}
         <div className="flex flex-wrap gap-2">
           {(sl.asap ? ['Через 40 мин', ...sl.list] : sl.list).map((s) => <Chip key={s} on={slot === s} onClick={() => setSlot(s)}>{s}</Chip>)}
         </div>
         <Label>Имя</Label>
-        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="given-name" placeholder="Как к вам обращаться" maxLength={40} className="h-13 w-full rounded-2xl bg-porc px-4 text-[16px] font-semibold outline-none placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
+        <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="given-name" placeholder="Как к вам обращаться" maxLength={40} className="h-12 w-full rounded-xl bg-white px-4 text-[16px] font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
         <Label>Телефон</Label>
         <PhoneField value={phone} onChange={(v) => { setPhone(v); if (telMask(v).ok) setErr('') }} error={err} />
-        <div className="mt-2 flex items-end justify-between gap-3">
+        <div className="mt-6 flex items-end justify-between gap-3 border-t border-line pt-5">
           <div><b className="block text-[15px]">К оплате на месте</b><span className="text-[13px] font-semibold text-mute">−20{NB}% за самовывоз · пример</span></div>
           <div className="text-right"><s className="mr-2 text-[15px] font-semibold text-mute">{money(total)}</s><Price v={disc} className="text-[26px]" /></div>
         </div>
@@ -312,7 +328,7 @@ function BookSheet() {
         <div className="py-6 text-center">
           <div className="flex justify-end"><CloseBtn onClick={close} /></div>
           <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }} className="mx-auto grid size-22 place-items-center rounded-full bg-crimson text-white"><Icon n="check" s={44} w={2.4} /></motion.div>
-          <h2 className="mt-5 font-serif text-[28px] font-medium">Стол забронирован</h2>
+          <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Стол забронирован</h2>
           <div className="mt-3 inline-block rounded-full bg-porc px-4 py-2 text-[14px] font-bold">{days[day].top}, {days[day].sub} · {time} · {g}{NB}{gw}</div>
           <p className="mx-auto mt-3 max-w-[320px] text-[15px] text-ink2">{nb('Перезвоним в течение 15 минут и подтвердим стол')}</p>
           <p className="mt-3 text-[12px] font-semibold text-mute">Демо: бронь никуда не отправлена</p>
@@ -324,21 +340,22 @@ function BookSheet() {
   return {
     body: (
       <div>
-        <div className="flex items-start justify-between gap-3"><h2 className="font-serif text-[30px] leading-tight font-medium">Бронь стола</h2><CloseBtn onClick={close} /></div>
+        <div className="flex items-start justify-between gap-3"><h2 className="font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">Бронь стола</h2><CloseBtn onClick={close} /></div>
         <Label>Дата</Label>
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 no-scrollbar">{days.map((d) => <Chip key={d.i} on={day === d.i} onClick={() => setDay(d.i)} sub={d.sub}>{d.top}</Chip>)}</div>
         <Label>Время</Label>
         {times.length ? <div className="flex flex-wrap gap-2">{times.map((t) => <Chip key={t} on={time === t} onClick={() => setTime(t)}>{t}</Chip>)}</div>
-          : <p className="rounded-2xl bg-porc px-3.5 py-3 text-[14px] font-semibold text-ink2">{nb('На сегодня бронь уже не принимаем — выберите другой день')}</p>}
+          : <p className="rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('На сегодня бронь уже не принимаем — выберите другой день')}</p>}
         <Label>Гостей</Label>
-        <div className="flex h-14 items-center justify-between rounded-2xl bg-porc pr-1.5 pl-4 text-[15px] font-bold">
+        <div className="flex h-12 items-center justify-between rounded-xl bg-white pr-1 pl-4 text-[15px] font-semibold ring-1 ring-[#E3DDD8] ring-inset">
           <span>{g}{NB}{gw}</span>
           <Stepper q={g} onDec={() => setG(Math.max(1, g - 1))} onInc={() => setG(Math.min(30, g + 1))} light label="гости" size="sm" />
         </div>
-        {g >= 9 && <p className="mt-2.5 rounded-2xl bg-porc px-3.5 py-3 text-[14px] font-semibold text-ink2">{nb('Для компании от 9 гостей лучше позвонить: +375 44 790-33-33')}</p>}
+        {g >= 9 && <p className="mt-2.5 rounded-xl bg-plate px-3.5 py-3 text-[14px] font-medium text-ink2">{nb('Для компании от 9 гостей лучше позвонить: +375 44 790-33-33')}</p>}
         <Label>Телефон</Label>
         <PhoneField value={phone} onChange={(v) => { setPhone(v); if (telMask(v).ok) setErr('') }} error={err} />
-        <input placeholder="Пожелания: у окна, детский стул" maxLength={140} aria-label="Пожелания" className="h-13 w-full rounded-2xl bg-porc px-4 text-[16px] font-semibold outline-none placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
+        <Label>Пожелания</Label>
+        <input placeholder="У окна, детский стул" maxLength={140} aria-label="Пожелания" className="h-12 w-full rounded-xl bg-white px-4 text-[16px] font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
       </div>
     ),
     footer: <button type="button" disabled={!time} onClick={() => { if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); return } setDone(true) }}
@@ -355,7 +372,7 @@ function InfoSheet({ topic }: { topic: 'cert' | 'office' }) {
     body: (
       <div>
         <div className="relative h-[220px] overflow-hidden rounded-3xl"><img src={c.img} alt="" className="size-full object-cover" /><div className="absolute top-3 right-3"><CloseBtn onClick={close} light /></div></div>
-        <h2 className="mt-5 font-serif text-[28px] font-medium">{c.h}</h2>
+        <h2 className="mt-5 font-sans text-[24px] leading-tight font-extrabold tracking-[-.02em]">{c.h}</h2>
         <p className="mt-2 text-[15px] leading-relaxed text-ink2">{nb(c.p)}</p>
         {topic === 'cert' && <div className="mt-4 flex flex-wrap gap-2">{[50, 100, 150, 200].map((v) => <span key={v} className="rounded-full bg-porc px-4 py-3 text-[14px] font-bold">{v}{NB}BYN</span>)}</div>}
       </div>
@@ -375,15 +392,15 @@ export function Sheets() {
   const s = sheet || last
   const open = !!sheet
   if (s?.kind === 'dish') return <DishWrap key={'d' + s.id + n} id={s.id} open={open} onClose={close} desk={desk} />
-  if (s?.kind === 'cart') return <Wrap key={'c' + n} open={open} onClose={close} title="Ваш заказ" use={CartSheet} />
-  if (s?.kind === 'book') return <Wrap key={'b' + n} open={open} onClose={close} title="Бронь стола" use={BookSheet} />
+  if (s?.kind === 'cart') return <Wrap key={'c' + n} open={open} onClose={close} title="Ваш заказ" use={CartSheet} side />
+  if (s?.kind === 'book') return <Wrap key={'b' + n} open={open} onClose={close} title="Бронь стола" use={BookSheet} side />
   if (s?.kind === 'info') return <Wrap key={'i' + s.topic + n} open={open} onClose={close} title="Информация" use={() => InfoSheet({ topic: s.topic })} />
   return null
 }
 
-function Wrap({ open, onClose, title, use }: { open: boolean; onClose: () => void; title: string; use: () => { body: ReactNode; footer?: ReactNode } }) {
+function Wrap({ open, onClose, title, use, side }: { open: boolean; onClose: () => void; title: string; use: () => { body: ReactNode; footer?: ReactNode }; side?: boolean }) {
   const c = use()
-  return <Sheet open={open} onClose={onClose} title={title} footer={c.footer}>{c.body}</Sheet>
+  return <Sheet open={open} onClose={onClose} title={title} footer={c.footer} side={side}>{c.body}</Sheet>
 }
 
 function DishWrap({ id, open, onClose, desk }: { id: string; open: boolean; onClose: () => void; desk: boolean }) {
