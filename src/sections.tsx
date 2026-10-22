@@ -45,14 +45,14 @@ export function Hero() {
           className="absolute inset-0 size-full object-cover object-[34%_50%] lg:object-[50%_62%]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,12,10,.55)_0%,rgba(20,12,10,0)_22%,rgba(20,12,10,0)_42%,rgba(20,12,10,.66)_72%,rgba(20,12,10,.82)_100%)] lg:bg-[linear-gradient(180deg,rgba(20,12,10,.5)_0%,rgba(20,12,10,0)_24%),linear-gradient(90deg,rgba(20,12,10,0)_36%,rgba(20,12,10,.7)_66%,rgba(20,12,10,.84)_100%)]" />
         <div className="absolute inset-x-4 bottom-24 text-white lg:inset-x-auto lg:top-1/2 lg:right-10 lg:bottom-auto lg:left-[54%] lg:-translate-y-[42%]">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE_IO }} className="text-xs font-bold tracking-[.18em] uppercase lg:text-sm">Ресторан международной кухни · Гомель</motion.div>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE_IO }} className="text-xs font-bold tracking-[.18em] uppercase lg:text-sm"><span className="lg:hidden">Международная кухня · Гомель</span><span className="hidden lg:inline">Ресторан международной кухни · Гомель</span></motion.div>
           <h1 className="mt-4 font-serif text-[clamp(38px,10.5vw,46px)] leading-[1.02] font-medium tracking-[-.02em] lg:mt-6 lg:text-[clamp(56px,5.4vw,84px)]">
             {line('Завтраки, обеды', 0)}{line(`и${NB}ужин с${NB}огнём`, 1, true)}
           </h1>
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE_IO, delay: 0.45 }} className="mt-5 hidden max-w-[460px] text-lg leading-relaxed text-white/90 lg:block">{nb('Два этажа в сердце города и печь-гриль Хоспер на древесных углях')}</motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: EASE_IO, delay: 0.6 }} className="mt-6 flex gap-2.5 lg:mt-9">
             <BookBtn />
-            <a href="#menu" className="inline-flex h-14 items-center gap-2 rounded-full px-5 text-base font-bold ring-[1.5px] ring-white/80 ring-inset backdrop-blur-sm transition hover:bg-white/10 lg:h-14 lg:px-7">Меню<Icon n="arrow" s={18} /></a>
+            <a href="#menu" className="inline-flex h-12 items-center gap-2 rounded-full px-5 text-base font-semibold ring-1 ring-white/70 ring-inset transition-colors duration-300 hover:bg-white/10 lg:h-14 lg:px-7">Меню<Icon n="arrow" s={18} /></a>
           </motion.div>
         </div>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 1 }}
@@ -67,7 +67,7 @@ export function Hero() {
 }
 function BookBtn() {
   const { open } = useStore()
-  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-6 text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98] lg:h-14 lg:flex-none lg:px-8"><Icon n="cal" s={18} /><span className="lg:hidden">Забронировать</span><span className="hidden lg:inline">Забронировать стол</span></button>
+  return <button type="button" onClick={() => open({ kind: 'book' })} className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-crimson px-6 text-base font-semibold text-white transition-colors duration-300 hover:bg-crimson-d lg:h-14 lg:flex-none lg:px-8"><Icon n="cal" s={18} /><span className="lg:hidden">Забронировать</span><span className="hidden lg:inline">Забронировать стол</span></button>
 }
 
 /* ---------- «Сегодня в Фасоли»: бенто-сетка ---------- */
