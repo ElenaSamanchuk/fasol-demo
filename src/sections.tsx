@@ -177,7 +177,7 @@ export function DishCard({ id }: { id: string; i?: number }) {
   return (
     <article className="group relative flex flex-col">
       <button type="button" onClick={() => open({ kind: 'dish', id })} className={`photo relative grid aspect-square place-items-center overflow-hidden rounded-card bg-plate text-left ${q ? 'on' : ''}`} aria-label={`${d.name}, подробнее`}>
-        {d.tag && <span className="absolute top-3 left-3 z-10 text-[11px] font-semibold tracking-[.14em] text-ink/70 uppercase">{d.tag}</span>}
+        {d.tag && <span className="absolute top-3 left-3 z-10 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold tracking-[.12em] text-ink/80 uppercase">{d.tag}</span>}
         {d.full
           ? <img ref={imgRef} src={d.img} alt="" loading="lazy" className={`absolute inset-0 size-full object-cover ${d.stop ? 'opacity-50 grayscale' : ''}`} />
           : <img ref={imgRef} src={d.img} alt="" loading="lazy" className={`plate-img w-[86%] ${d.stop ? 'opacity-45 grayscale' : ''}`} />}
@@ -297,7 +297,7 @@ export function About() {
           <h2 className="mt-3 font-serif text-4xl leading-[1.06] font-medium tracking-[-.02em] lg:text-5xl">Два этажа в{NB}сердце <em className="font-normal">Гомеля</em></h2>
           <p className="mt-4 text-base leading-relaxed text-ink2 lg:text-lg">{nb('Международная кухня, свой хлеб и печь-гриль Хоспер. Днём — завтраки и бизнес-ланчи, вечером — стейки и музыка. Детская комната с аниматором, летом — терраса')}</p>
           <dl className="mt-7 grid grid-cols-3 gap-3 border-t border-line pt-6">
-            {[['5,0', 'на Яндексе'], ['15', 'лет группе'], ['350°', 'в Хоспере']].map(([v, l]) => <div key={l}><dt className="font-serif text-4xl leading-none font-medium lg:text-5xl">{v}</dt><dd className="mt-1.5 text-sm font-semibold text-mute">{l}</dd></div>)}
+            {[['5,0', 'на Яндексе'], ['2', 'этажа'], ['350°', 'в Хоспере']].map(([v, l]) => <div key={l}><dt className="font-serif text-4xl leading-none font-medium lg:text-5xl">{v}</dt><dd className="mt-1.5 text-sm font-semibold text-mute">{l}</dd></div>)}
           </dl>
         </Reveal>
       </div>
@@ -326,7 +326,7 @@ export function Footer() {
             </div></div>
         </div>
         <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/15 pt-6 text-sm text-white/60">
-          <span>© Фасоль, ООО «Орион Холл»</span><span className="ml-auto">Сайт — Елена Саманчук</span>
+          <span>© Фасоль, ООО «Орион Холл»</span><span className="w-full lg:ml-auto lg:w-auto">Сайт — Елена Саманчук</span>
           <span className="w-full text-xs text-white/70">Демо-версия: цены, вес и КБЖУ — примеры, заказы и брони никуда не отправляются</span>
         </div>
       </div>
