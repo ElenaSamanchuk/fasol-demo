@@ -15,7 +15,7 @@ export function Header() {
   const nav = [['Меню', '#menu'], ['Хоспер-гриль', '#cat-grill'], ['Бизнес-ланч', '#cat-lunch'], ['О ресторане', '#about'], ['Контакты', '#contacts']]
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-[background,color,box-shadow] duration-300 ${solid ? 'bg-porc/85 text-ink shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150' : 'text-white'}`}>
+      className={`fixed inset-x-0 top-0 z-40 transition-[background-color,color,box-shadow] duration-500 ease-[cubic-bezier(.45,0,.2,1)] ${solid ? 'bg-porc text-ink shadow-[0_1px_0_var(--color-line)]' : 'text-white'}`}>
       <div className="mx-auto flex h-16 max-w-[1320px] items-center gap-8 px-4 lg:h-20 lg:px-10">
         <a href="#top" aria-label="Фасоль — наверх" className={`transition-colors ${solid ? 'text-crimson' : 'text-white'}`}><Logo className="h-8 w-auto lg:h-11" /></a>
         <nav className="hidden gap-7 text-[15px] font-semibold lg:flex" aria-label="Разделы">
@@ -176,7 +176,7 @@ export function DishCard({ id, i }: { id: string; i: number }) {
   }
   return (
     <article data-i={i}
-      className={`group relative flex flex-col overflow-hidden rounded-[22px] bg-white transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-1 hover:shadow-float ${q ? 'shadow-[inset_0_0_0_1.5px_var(--color-crimson)]' : 'shadow-[inset_0_0_0_1px_var(--color-line)]'}`}>
+      className={`card group relative flex flex-col overflow-hidden rounded-[22px] bg-white ${q ? 'on' : ''}`}>
       <button type="button" onClick={() => open({ kind: 'dish', id })} className="relative grid aspect-square place-items-center overflow-hidden bg-plate text-left" aria-label={`${d.name}, подробнее`}>
         {d.tag && <span className="absolute top-2.5 left-2.5 z-10 rounded-full bg-white/80 px-2.5 py-1 text-[10px] font-extrabold tracking-[.08em] uppercase backdrop-blur lg:top-3 lg:left-3 lg:text-[11px]">{d.tag}</span>}
         {d.full
@@ -189,11 +189,11 @@ export function DishCard({ id, i }: { id: string; i: number }) {
           <p className="mt-1 line-clamp-1 hidden text-[13px] text-mute lg:block">{d.desc}</p>
           <span className="mt-1 block text-[12px] font-semibold text-mute">{d.per100 ? 'цена за 100 г' : d.weight}</span>
         </button>
-        <div className="mt-auto flex min-h-11 items-center justify-between gap-2 pt-3">
+        <div className="mt-auto flex min-h-11 flex-wrap items-center justify-between gap-x-2 gap-y-2 pt-3">
           <Price v={d.price} className={`text-[16px] ${d.stop ? 'text-mute' : ''}`} />
           {d.stop ? <span className="rounded-full bg-porc px-3 py-2 text-[11px] font-extrabold tracking-wide text-mute uppercase">Нет сегодня</span>
-            : q ? <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 420, damping: 26 }}><Stepper q={q} onDec={() => changeById(id, -1)} onInc={() => changeById(id, 1)} label={d.name} size="sm" /></motion.div>
-              : <button type="button" onClick={plus} aria-label={`Добавить: ${d.name}`} className="grid size-10 place-items-center rounded-full bg-crimson text-white shadow-[0_8px_18px_-8px_rgba(174,22,61,.9)] transition hover:bg-crimson-d active:scale-90 lg:size-11"><Icon n="plus" s={20} w={2.4} /></button>}
+            : q ? <motion.div className="shrink-0" initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35, ease: [0.45, 0, 0.2, 1] }}><Stepper q={q} onDec={() => changeById(id, -1)} onInc={() => changeById(id, 1)} label={d.name} size="sm" /></motion.div>
+              : <button type="button" onClick={plus} aria-label={`Добавить: ${d.name}`} className="grid size-10 shrink-0 place-items-center rounded-full bg-crimson text-white transition-colors duration-300 hover:bg-crimson-d active:scale-95 lg:size-11"><Icon n="plus" s={20} w={2.4} /></button>}
         </div>
       </div>
     </article>
@@ -212,7 +212,10 @@ export function Menu() {
     CATS.forEach((c) => { const el = document.getElementById('cat-' + c.id); if (el) io.observe(el) })
     return () => io.disconnect()
   }, [q])
-  useEffect(() => { bar.current?.querySelector<HTMLElement>(`[data-c="${active}"]`)?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }) }, [active])
+  useEffect(() => {
+    const b = bar.current, el = b?.querySelector<HTMLElement>(`[data-c="${active}"]`)
+    if (b && el) b.scrollTo({ left: el.offsetLeft - b.clientWidth / 2 + el.offsetWidth / 2, behavior: 'smooth' })
+  }, [active])
 
   const go = (id: string) => {
     setActive(id); jumping.current = true
@@ -232,7 +235,7 @@ export function Menu() {
           <h2 className="mt-3 font-serif text-[36px] leading-[1.04] font-medium tracking-[-.02em] lg:text-[56px]">Закажите с{NB}собой <em className="font-normal">или{NB}за{NB}столом</em></h2>
           <p className="mt-3 max-w-[560px] text-[15px] text-ink2 lg:text-[17px]">{nb('Соберите заказ — администратор перезвонит и подтвердит. Оплата на месте, с собой −20 %')}</p></Reveal>
       </div>
-      <div className="menu-bar sticky top-0 z-30 mt-6 border-b border-line bg-porc/85 backdrop-blur-xl backdrop-saturate-150">
+      <div className="menu-bar sticky top-0 z-30 mt-6 border-b border-line bg-porc">
         <div className="mx-auto flex max-w-[1320px] items-center gap-2 px-4 lg:px-10">
           {search ? (
             <motion.label initial={{ opacity: 0, width: '40%' }} animate={{ opacity: 1, width: '100%' }} className="my-2 flex h-11 items-center gap-2 rounded-full bg-white px-4 text-mute shadow-[inset_0_0_0_1px_var(--color-line)]">
@@ -310,7 +313,7 @@ export function Footer() {
     <footer id="contacts" className="mt-24 bg-ink pt-16 pb-[calc(140px+env(safe-area-inset-bottom))] text-white lg:mt-36 lg:pb-14">
       <div className="mx-auto max-w-[1320px] px-4 lg:px-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <div><Logo className="h-14 w-auto lg:h-16" /><span className="mt-2 ml-12 block font-script text-[30px] text-white/85 lg:text-[40px]">просто люби…</span></div>
+          <div><Logo className="h-14 w-auto lg:h-16" /><p className="mt-4 max-w-[320px] text-[15px] text-white/70">Ресторан международной кухни в сердце Гомеля</p></div>
           <div className="flex gap-2.5"><BookBtnLight /></div>
         </div>
         <div className="mt-12 grid gap-8 border-t border-white/15 pt-10 sm:grid-cols-2 lg:grid-cols-4">
