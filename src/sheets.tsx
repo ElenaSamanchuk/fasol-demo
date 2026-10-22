@@ -25,7 +25,7 @@ function Sheet({ open, onClose, title, children, footer, wide, side }: { open: b
           <Drawer.Content aria-describedby={undefined} className="fixed inset-x-0 bottom-0 z-50 flex max-h-[92svh] flex-col rounded-t-[28px] bg-white outline-none">
             <div className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-ink/15" aria-hidden />
             <Drawer.Title className="sr-only">{title}</Drawer.Title>
-            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-5" data-vaul-no-drag={false}>{children}</div>
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pt-3 pb-5">{children}</div>
             {footer && <div className="shrink-0 border-t border-line bg-white px-4 pt-3 pb-[max(14px,env(safe-area-inset-bottom))]">{footer}</div>}
           </Drawer.Content>
         </Drawer.Portal>
@@ -203,7 +203,7 @@ function CartSheet() {
   }, [order])
 
   const submit = () => {
-    if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); return }
+    if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); setTimeout(() => document.getElementById('tel-err')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50); return }
     setOrder({ n: 1000 + Math.floor(Math.random() * 8999), slot, count, sum: disc }); setStep(0); clear()
   }
 
@@ -358,7 +358,7 @@ function BookSheet() {
         <input placeholder="У окна, детский стул" maxLength={140} aria-label="Пожелания" className="h-12 w-full rounded-xl bg-white px-4 text-base font-medium outline-none ring-1 ring-inset ring-[#E3DDD8] transition-shadow placeholder:text-mute/70 focus:ring-[1.5px] focus:ring-crimson" />
       </div>
     ),
-    footer: <button type="button" disabled={!time} onClick={() => { if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); return } setDone(true) }}
+    footer: <button type="button" disabled={!time} onClick={() => { if (!telMask(phone).ok) { setErr('Введите номер полностью — перезвоним, чтобы подтвердить'); setTimeout(() => document.getElementById('tel-err')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50); return } setDone(true) }}
       className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d disabled:opacity-40"><Icon n="cal" s={18} />Забронировать{time ? ` · ${time}` : ''}</button>,
   }
 }

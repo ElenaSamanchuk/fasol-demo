@@ -207,8 +207,10 @@ export function Menu() {
 
   useEffect(() => {
     const io = new IntersectionObserver((es) => { if (jumping.current) return; es.forEach((e) => e.isIntersecting && setActive(e.target.id.slice(4))) }, { rootMargin: '-30% 0px -65% 0px' })
+    const top = () => { const f = document.getElementById('cat-' + CATS[0].id); if (f && f.getBoundingClientRect().top > window.innerHeight * 0.35 && !jumping.current) setActive(CATS[0].id) }
+    window.addEventListener('scroll', top, { passive: true })
     CATS.forEach((c) => { const el = document.getElementById('cat-' + c.id); if (el) io.observe(el) })
-    return () => io.disconnect()
+    return () => { io.disconnect(); window.removeEventListener('scroll', top) }
   }, [q])
   useEffect(() => {
     const b = bar.current, el = b?.querySelector<HTMLElement>(`[data-c="${active}"]`)
@@ -319,7 +321,7 @@ export function Footer() {
           <div><h3 className="text-xs font-extrabold tracking-[.16em] text-white/55 uppercase">Часы</h3><p className="mt-3 text-base font-semibold">Пн–пт 9:00–23:00<br />Сб–вс 10:00–23:00<br /><span className="font-medium text-white/75">Бизнес-ланч пн–пт 12–15</span></p></div>
           <div><h3 className="text-xs font-extrabold tracking-[.16em] text-white/55 uppercase">Телефоны</h3><p className="mt-3 text-base font-semibold"><a href="tel:+375447903333">+375 44 790-33-33</a><br /><a href="tel:+375232221468" className="font-medium text-white/75">+375 232 22-14-68</a></p></div>
           <div><h3 className="text-xs font-extrabold tracking-[.16em] text-white/55 uppercase">Ещё</h3>
-            <div className="mt-3 flex flex-col items-start gap-2 text-base font-semibold">
+            <div className="mt-1 flex flex-col items-start text-base font-semibold [&>*]:py-2">
               <button type="button" onClick={() => open({ kind: 'info', topic: 'cert' })} className="hover:text-white/80">Подарочные сертификаты</button>
               <button type="button" onClick={() => open({ kind: 'info', topic: 'office' })} className="hover:text-white/80">Обеды в офис</button>
               <a href="https://instagram.com/fasol.gomel" target="_blank" rel="noopener" className="hover:text-white/80">Instagram @fasol.gomel</a>

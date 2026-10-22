@@ -116,7 +116,7 @@ export function Toast() {
         <motion.div role="status" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.35, ease: EASE }}
           className="fixed inset-x-4 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 flex items-center gap-3 rounded-2xl bg-white p-3 pl-3 shadow-lg">
           <span className="grid size-7 shrink-0 place-items-center rounded-full bg-crimson text-white"><Icon n="check" s={15} w={2.6} /></span>
-          <span className="min-w-0 flex-1 truncate text-sm font-semibold">{toast} — в заказе</span>
+          <span className="min-w-0 flex-1 text-sm font-semibold">Добавлено в заказ</span>
           <button type="button" onClick={() => open({ kind: 'cart' })} className="h-9 shrink-0 rounded-full bg-porc px-3.5 text-sm font-bold">Оформить</button>
         </motion.div>
       )}
@@ -129,7 +129,7 @@ export function BottomNav() {
   const { open } = useStore()
   const item = 'flex flex-col items-center gap-1 text-xs font-bold text-mute active:scale-95 transition'
   return (
-    <nav aria-label="Быстрые действия" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white/90 px-2 pt-2 pb-[max(10px,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
+    <nav aria-label="Быстрые действия" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white px-2 pt-2 pb-[max(10px,env(safe-area-inset-bottom))] lg:hidden">
       <a href="#top" className={item}><Icon n="fork" s={22} w={1.8} />Главная</a>
       <a href="#menu" className={item}><Icon n="search" s={22} w={1.8} />Меню</a>
       <button type="button" onClick={() => open({ kind: 'book' })} className={item}><Icon n="cal" s={22} w={1.8} />Бронь</button>
