@@ -4,6 +4,8 @@ export const ICONS: Record<string, string> = {
   tg: '<path d="M20.6 4.2 3.4 10.9c-.9.4-.9 1.2 0 1.5l4.2 1.3 1.6 5.1c.2.6.9.8 1.4.4l2.4-2 4.6 3.4c.7.4 1.4.1 1.6-.7l2.8-13.8c.3-1.1-.4-1.6-1.4-1.9z"/><path d="m7.8 13.6 9.2-5.9"/>',
   nav: '<path d="M3.5 10.8 20 3.9l-6.9 16.5-1.9-7.5z"/>',
   pin: '<path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  chat: '<path d="M20 11.5a8 8 0 0 1-8 8c-1.3 0-2.5-.3-3.6-.8L4 20l1.3-4.4A8 8 0 1 1 20 11.5z"/><path d="M8 10h8M8 13.5h5"/>',
+  review: '<path d="M20 11a8 8 0 0 1-8 8c-1.3 0-2.5-.3-3.6-.8L4 20l1.3-4.4A8 8 0 1 1 20 11z"/><path d="m12 6.5 1.1 2.3 2.5.4-1.8 1.7.4 2.5-2.2-1.2-2.2 1.2.4-2.5-1.8-1.7 2.5-.4z"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
   down: '<path d="m6.5 9.5 5.5 5.5 5.5-5.5"/>',
   chev: '<path d="m9.5 6 6 6-6 6"/>',
@@ -18,6 +20,8 @@ export const ICONS: Record<string, string> = {
   fork: '<path d="M7 3.5v6.2a2 2 0 0 0 2 2 2 2 0 0 0 2-2V3.5M9 11.7v8.8M16.5 20.5V3.6c1.9 1 3 3.6 3 6.6 0 2.4-1 3.6-3 3.9"/>',
   heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>',
   cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  play: '<path d="m8 5 11 7-11 7z"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   back: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
   flame: '<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-2.9 1.9-5 3.4-6.6.3 1.6 1.1 2.8 2.3 3.4-.2-3.3 1.3-6.1 3.8-8.1.2 2.6 1.3 4.4 2.6 6 .9 1.2 1.9 2.6 1.9 4.9 0 4-3.2 6.6-7.5 6.6z"/>',
@@ -25,7 +29,7 @@ export const ICONS: Record<string, string> = {
   bag: '<path d="M5 8h14l-1 12.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
   gift: '<rect x="3.5" y="8" width="17" height="4.5" rx="1.2"/><path d="M5 12.5v8h14v-8M12 8v12.5M12 8C10.6 4.6 6.8 4.4 6.8 6.6 6.8 8 9.4 8 12 8zm0 0c1.4-3.4 5.2-3.6 5.2-1.4C17.2 8 14.6 8 12 8z"/>',
   office: '<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8.5 8h2M13.5 8h2M8.5 12h2M13.5 12h2M10 20.5v-4h4v4"/>',
-  kids: '<circle cx="12" cy="12" r="8.5"/><path d="M8.6 14c.8 1.3 2 2 3.4 2s2.6-.7 3.4-2"/><path d="M9.2 9.6h.01M14.8 9.6h.01" stroke-width="2.6"/>',
+  teddy: '<circle cx="7.3" cy="5.5" r="2.2"/><circle cx="16.7" cy="5.5" r="2.2"/><path d="M7.5 5.7a5.1 5.1 0 0 1 9 0c.5.8.8 1.8.8 2.8 0 2.8-2.1 4.6-5.3 4.6s-5.3-1.8-5.3-4.6c0-1 .3-2 .8-2.8zM8.7 12.5c-1.5 1.4-2.2 3.5-1.4 5.6M15.3 12.5c1.5 1.4 2.2 3.5 1.4 5.6M9.7 20.7h4.6"/><ellipse cx="12" cy="10" rx="2.1" ry="1.6"/><path d="M12 9.3v.8M9.8 7.8h.01M14.2 7.8h.01"/><ellipse cx="5.9" cy="15.6" rx="1.8" ry="2.6" transform="rotate(25 5.9 15.6)"/><ellipse cx="18.1" cy="15.6" rx="1.8" ry="2.6" transform="rotate(-25 18.1 15.6)"/><ellipse cx="8.2" cy="19.9" rx="2.3" ry="1.9"/><ellipse cx="15.8" cy="19.9" rx="2.3" ry="1.9"/>',
   stairs: '<path d="M3.5 20h4.5v-4.5h4.5V11h4.5V6.5h3.5"/>',
   umbrella: '<path d="M3 11.5a9 9 0 0 1 18 0z"/><path d="M12 11.5v7a2 2 0 0 0 4 0"/>',
   wifi: '<path d="M2.8 9a14 14 0 0 1 18.4 0M5.8 12.6a9.5 9.5 0 0 1 12.4 0M8.9 16.1a4.8 4.8 0 0 1 6.2 0"/><circle cx="12" cy="19.3" r=".9" fill="currentColor"/>',
@@ -36,6 +40,7 @@ export const ICONS: Record<string, string> = {
 }
 
 export function Icon({ n, s = 20, w = 2, className = '' }: { n: string; s?: number; w?: number; className?: string }) {
+  if (n === 'teddy' || n === 'clef') return <span aria-hidden="true" className={'inline-block shrink-0 ' + className} style={{ width: s, height: s, backgroundColor: 'currentColor', mask: `url(img/icon-${n}.svg) center / contain no-repeat`, WebkitMask: `url(img/icon-${n}.svg) center / contain no-repeat` }} />
   return (
     <svg className={'shrink-0 ' + className} width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: ICONS[n] }} />
   )

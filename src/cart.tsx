@@ -7,7 +7,7 @@ import { EASE, Price, Roll, Stepper, useDesktop } from './ui'
 
 /* Боковая корзина на компьютере — как в Яндекс Еде: всегда видно, что в заказе и сколько */
 export function CartPanel() {
-  const { lines, count, total, change, open } = useStore()
+  const { lines, count, total, takeawayTotal, change, open } = useStore()
   return (
     <div id="cart-target-desk" className="rounded-3xl bg-white p-5 shadow-[inset_0_0_0_1px_var(--color-line)]">
       <div className="flex items-baseline justify-between">
@@ -25,14 +25,14 @@ export function CartPanel() {
             <AnimatePresence initial={false}>
               {lines.map((l) => (
                 <motion.li key={l.key} layout initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.35, ease: EASE }} className="overflow-hidden">
-                  <div className="grid grid-cols-[48px_1fr] gap-3 border-b border-line py-3">
+                  <div className="grid grid-cols-[48px_minmax(0,1fr)] items-center gap-3 border-b border-line py-3">
                     <span className="relative grid size-12 place-items-center overflow-hidden rounded-xl bg-plate">
                       {DISH[l.id].full ? <img src={DISH[l.id].img} alt="" className="absolute inset-0 size-full object-cover" /> : <img src={DISH[l.id].img} alt="" className="w-[92%]" />}
                     </span>
                     <div className="min-w-0">
-                      <b className="block truncate text-sm font-bold">{DISH[l.id].name}</b>
+                      <b className="block text-sm leading-[1.4] font-bold">{DISH[l.id].name}</b>
                       {l.adds.length > 0 && <span className="block truncate text-xs font-semibold text-mute">+ {l.adds.map((a) => ADDS[a].name).join(', ')}</span>}
-                      <div className="mt-1.5 flex items-center justify-between"><Price v={lineUnit(l) * l.q} className="text-sm" /><Stepper q={l.q} onDec={() => change(l.key, -1)} onInc={() => change(l.key, 1)} light label={DISH[l.id].name} size="sm" /></div>
+                      <div className="mt-2 flex items-center justify-between gap-2"><Price v={lineUnit(l) * l.q} className="text-sm" /><Stepper q={l.q} onDec={() => change(l.key, -1)} onInc={() => change(l.key, 1)} light label={DISH[l.id].name} size="compact" /></div>
                     </div>
                   </div>
                 </motion.li>
@@ -40,10 +40,11 @@ export function CartPanel() {
             </AnimatePresence>
           </ul>
           <div className="mt-4 flex items-end justify-between">
-            <span className="text-sm font-semibold text-mute">С собой −20{NB}%<br />оплата на месте</span>
-            <div className="text-right"><s className="block text-sm font-semibold text-mute">{money(total)}</s><Price v={Math.round(total * 80) / 100} className="text-2xl" /></div>
+            <span className="text-sm font-semibold text-mute">С собой<br />оплата на месте</span>
+            <div className="text-right">{takeawayTotal < total && <s className="block text-sm font-semibold text-mute">{money(total)}</s>}<Price v={takeawayTotal} className="text-2xl" /></div>
           </div>
-          <button type="button" onClick={() => open({ kind: 'cart' })} className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]">Оформить<Icon n="arrow" s={18} /></button>
+          <p className="mt-3 text-xs leading-relaxed text-mute">−20{NB}% на основное меню. Расчёт для демо, итог подтвердит администратор</p>
+          <button type="button" onClick={() => open({ kind: 'cart' })} className="button-control mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-crimson text-base font-bold text-white transition hover:bg-crimson-d active:scale-[.98]"><span className="button-label">Оформить</span><Icon n="arrow" s={18} /></button>
         </>
       )}
     </div>
@@ -52,7 +53,7 @@ export function CartPanel() {
 
 /* Плавающий остров корзины на телефоне */
 export function CartIsland() {
-  const { count, total, open, sheet, fly } = useStore()
+  const { count, takeawayTotal, open, sheet, fly } = useStore()
   const desk = useDesktop()
   const ctl = useAnimationControls()
   // на первом экране остров не показываем — он закрыл бы текст и кнопки
@@ -66,11 +67,11 @@ export function CartIsland() {
       {count > 0 && !sheet && past && (
         <motion.button type="button" onClick={() => open({ kind: 'cart' })} initial={{ y: 90, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 90, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-          className="fixed inset-x-4 bottom-[calc(76px+env(safe-area-inset-bottom))] z-40">
-          <motion.span animate={ctl} className="flex h-14 items-center gap-3 rounded-full bg-ink pr-5 pl-2 text-white shadow-lg">
-            <span id="cart-target-mob" className="grid size-10 place-items-center rounded-full bg-crimson text-sm font-extrabold"><Roll value={count} /></span>
+          className="fixed inset-x-4 bottom-[calc(64px+env(safe-area-inset-bottom))] z-40">
+          <motion.span animate={ctl} className="flex h-12 items-center gap-3 rounded-full bg-ink pr-5 pl-2 text-white shadow-lg">
+            <span id="cart-target-mob" className="grid size-8 place-items-center rounded-full bg-crimson text-sm font-extrabold"><Roll value={count} /></span>
             <span className="text-sm font-bold">Ваш заказ</span>
-            <span className="ml-auto text-sm font-extrabold tabular-nums"><Roll value={money(Math.round(total * 80) / 100)} />{NB}BYN</span>
+            <span className="ml-auto text-sm font-extrabold tabular-nums"><Roll value={money(takeawayTotal)} />{NB}BYN</span>
           </motion.span>
         </motion.button>
       )}
@@ -114,10 +115,10 @@ export function Toast() {
     <AnimatePresence>
       {toast && !sheet && !desk && (
         <motion.div role="status" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.35, ease: EASE }}
-          className="fixed inset-x-4 bottom-[calc(142px+env(safe-area-inset-bottom))] z-40 flex items-center gap-3 rounded-2xl bg-white p-3 pl-3 shadow-lg">
+          className="fixed inset-x-4 bottom-[calc(124px+env(safe-area-inset-bottom))] z-40 flex items-center gap-3 rounded-2xl bg-white p-3 pl-3 shadow-lg">
           <span className="grid size-7 shrink-0 place-items-center rounded-full bg-crimson text-white"><Icon n="check" s={15} w={2.6} /></span>
           <span className="min-w-0 flex-1 text-sm font-semibold">Добавлено в заказ</span>
-          <button type="button" onClick={() => open({ kind: 'cart' })} className="h-9 shrink-0 rounded-full bg-porc px-3.5 text-sm font-bold">Оформить</button>
+          <button type="button" onClick={() => open({ kind: 'cart' })} className="button-control h-9 shrink-0 rounded-full bg-porc px-3.5 text-sm font-bold"><span className="button-label">Оформить</span></button>
         </motion.div>
       )}
     </AnimatePresence>
@@ -127,13 +128,33 @@ export function Toast() {
 /* Нижняя навигация телефона */
 export function BottomNav() {
   const { open } = useStore()
-  const item = 'flex flex-col items-center gap-1 text-xs font-bold text-mute active:scale-95 transition'
+  const item = 'flex min-h-11 flex-col items-center justify-center gap-0.5 text-[10px] leading-tight font-medium text-mute transition-colors hover:text-crimson active:text-crimson'
   return (
-    <nav aria-label="Быстрые действия" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white px-2 pt-2 pb-[max(10px,env(safe-area-inset-bottom))] lg:hidden">
-      <a href="#top" className={item}><Icon n="fork" s={22} w={1.8} />Главная</a>
-      <a href="#menu" className={item}><Icon n="search" s={22} w={1.8} />Меню</a>
-      <button type="button" onClick={() => open({ kind: 'book' })} className={item}><Icon n="cal" s={22} w={1.8} />Бронь</button>
-      <a href="#contacts" className={item}><Icon n="pin" s={22} w={1.8} />Контакты</a>
+    <nav aria-label="Быстрые действия" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white px-2 pt-0.5 pb-[max(4px,env(safe-area-inset-bottom))] lg:hidden">
+      <a href="#menu" className={item}><Icon n="fork" s={19} w={1.5} />Меню</a>
+      <button type="button" onClick={() => open({ kind: 'book' })} className={item}><Icon n="cal" s={19} w={1.5} />Бронь</button>
+      <a href="#reviews" className={item}><Icon n="review" s={19} w={1.5} />Отзывы</a>
+      <a href="#about" className={item}><Icon n="pin" s={19} w={1.5} />Контакты</a>
     </nav>
   )
+}
+
+export function BackToTop() {
+  const { sheet, count, toast } = useStore()
+  const desk = useDesktop()
+  const { scrollY } = useScroll()
+  const [visible, setVisible] = useState(false)
+  const [mapInView, setMapInView] = useState(false)
+  useEffect(() => {
+    const map = document.getElementById('about')
+    if (!map) return
+    const observer = new IntersectionObserver(([entry]) => setMapInView(entry.isIntersecting))
+    observer.observe(map)
+    return () => observer.disconnect()
+  }, [])
+  useMotionValueEvent(scrollY, 'change', (y) => setVisible(y > window.innerHeight))
+  const show = visible && !sheet && !(!desk && (toast || mapInView))
+  return <AnimatePresence>{show && <motion.button initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: .28, ease: EASE }} type="button" aria-label="Наверх" title="Наверх"
+    onClick={() => window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })}
+    className={`fixed right-4 z-40 grid size-11 place-items-center rounded-full bg-white text-crimson shadow-md ring-1 ring-ink/10 ring-inset transition-colors hover:bg-crimson-50 lg:right-6 ${desk ? 'bottom-20' : count > 0 ? 'bottom-[calc(180px+env(safe-area-inset-bottom))]' : 'bottom-[calc(126px+env(safe-area-inset-bottom))]'}`}><Icon n="arrow" s={20} className="-rotate-90" /></motion.button>}</AnimatePresence>
 }

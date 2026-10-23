@@ -1,10 +1,8 @@
 import { StrictMode } from 'react'
+import { MotionConfig } from 'motion/react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-
-// фото проявляются мягко, когда загрузились, — без вспышек и «прыжков»
-document.addEventListener('load', (e) => { const t = e.target as HTMLElement; if (t.tagName === 'IMG') t.classList.add('is-in') }, true)
 
 // типографика: неразрывный пробел после коротких слов (в, и, с, на…) и перед тире — для всего текста страницы
 const NBSP = '\u00A0'
@@ -25,6 +23,6 @@ new MutationObserver((ms) => ms.forEach((m) => { if (m.type === 'characterData')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <MotionConfig reducedMotion="user"><App /></MotionConfig>
   </StrictMode>,
 )

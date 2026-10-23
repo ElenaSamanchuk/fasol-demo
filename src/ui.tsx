@@ -49,14 +49,14 @@ export function Roll({ value, className = '' }: { value: string | number; classN
   )
 }
 
-export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: number; onDec: () => void; onInc: () => void; light?: boolean; label: string; size?: 'xs' | 'sm' | 'md' | 'lg' }) {
-  const h = size === 'lg' ? 'h-14' : size === 'sm' ? 'h-10' : size === 'xs' ? 'h-9' : 'h-11'
-  const b = size === 'lg' ? 'size-12' : size === 'sm' ? 'size-9' : size === 'xs' ? 'size-8' : 'size-10'
+export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: number; onDec: () => void; onInc: () => void; light?: boolean; label: string; size?: 'compact' | 'xs' | 'sm' | 'md' | 'lg' }) {
+  const h = size === 'compact' ? 'h-7' : size === 'lg' ? 'h-14' : size === 'sm' ? 'h-10' : size === 'xs' ? 'h-8' : 'h-11'
+  const b = size === 'compact' ? 'size-6' : size === 'lg' ? 'size-12' : size === 'sm' ? 'size-9' : size === 'xs' ? 'size-7' : 'size-10'
   return (
-    <span className={`inline-flex items-center rounded-full px-0.5 ${h} ${light ? 'bg-plate text-ink' : 'bg-crimson text-white'}`}>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onDec() }} aria-label={`Меньше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="minus" s={size === 'xs' ? 15 : 18} w={2.2} /></button>
-      <b className="min-w-5 text-center text-sm font-extrabold tabular-nums"><Roll value={q} /></b>
-      <button type="button" onClick={(e) => { e.stopPropagation(); onInc() }} aria-label={`Больше: ${label}`} className={`${b} grid place-items-center rounded-full transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="plus" s={size === 'xs' ? 15 : 18} w={2.2} /></button>
+    <span className={`inline-flex items-center rounded-full px-0.5 ${h} ${light ? (size === 'compact' ? 'bg-porc text-ink' : 'bg-plate text-ink') : 'bg-crimson text-white'}`}>
+      <button type="button" onClick={(e) => { e.stopPropagation(); onDec() }} aria-label={`Меньше: ${label}`} className={`${b} relative grid place-items-center rounded-full after:absolute after:inset-0 after:content-[''] ${size === 'compact' ? 'after:-inset-x-2 after:-inset-y-2.5' : ''} transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="minus" s={size === 'compact' ? 12 : size === 'xs' ? 15 : 18} w={size === 'compact' ? 1.6 : 2.2} /></button>
+      <b className={`${size === 'compact' ? 'min-w-4 text-xs font-semibold' : 'min-w-5 text-sm font-extrabold'} text-center tabular-nums`}><Roll value={q} /></b>
+      <button type="button" onClick={(e) => { e.stopPropagation(); onInc() }} aria-label={`Больше: ${label}`} className={`${b} relative grid place-items-center rounded-full after:absolute after:inset-0 after:content-[''] ${size === 'compact' ? 'after:-inset-x-2 after:-inset-y-2.5' : ''} transition active:scale-90 ${light ? 'hover:bg-ink/8' : 'hover:bg-white/15'}`}><Icon n="plus" s={size === 'compact' ? 12 : size === 'xs' ? 15 : 18} w={size === 'compact' ? 1.6 : 2.2} /></button>
     </span>
   )
 }
@@ -64,7 +64,7 @@ export function Stepper({ q, onDec, onInc, light, label, size = 'md' }: { q: num
 export function Chip({ on, children, onClick, sub }: { on?: boolean; children: ReactNode; onClick?: () => void; sub?: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={!!on}
-      className={`shrink-0 rounded-xl px-3.5 text-sm font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-crimson-50 text-crimson ring-[1.5px] ring-crimson ring-inset' : 'bg-white text-ink ring-1 ring-[#E3DDD8] ring-inset hover:ring-ink/40'}`}>
+      className={`shrink-0 rounded-xl px-3.5 text-sm font-semibold transition-[background-color,color,box-shadow] duration-300 ${sub ? 'h-13 min-w-[68px]' : 'h-10'} ${on ? 'bg-crimson-50 text-crimson ring-[1.5px] ring-crimson ring-inset' : 'bg-white text-ink ring-1 ring-control-line ring-inset hover:ring-ink/40'}`}>
       {children}{sub && <small className="mt-0.5 block text-xs font-medium opacity-65">{sub}</small>}
     </button>
   )
@@ -89,9 +89,9 @@ export function telMask(v: string) {
 export function PhoneField({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: string }) {
   return (
     <>
-      <label className="flex h-12 items-center gap-2.5 rounded-xl bg-white px-4 text-mute ring-1 ring-[#E3DDD8] ring-inset transition-shadow focus-within:ring-[1.5px] focus-within:ring-crimson">
+      <label className="flex h-12 items-center gap-2.5 rounded-xl bg-white px-4 text-mute ring-1 ring-control-line ring-inset transition-shadow focus-within:ring-[1.5px] focus-within:ring-crimson">
         <Icon n="phone" s={18} />
-        <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+375 (29) 123-45-67" value={value}
+        <input type="tel" inputMode="tel" autoComplete="tel" aria-label="Телефон" placeholder="+375 (29) 123-45-67" value={value}
           onChange={(e) => onChange(telMask(e.target.value).v)} aria-invalid={!!error} aria-describedby="tel-err"
           className="min-w-0 flex-1 bg-transparent text-base font-medium tracking-wide text-ink outline-none placeholder:text-mute/70" />
       </label>

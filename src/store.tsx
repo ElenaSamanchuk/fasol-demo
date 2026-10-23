@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ADDS, DISH } from './data'
+import { ADDS, CAT_OF, DISH } from './data'
 
 // Позиция корзины: одно блюдо с одним набором добавок — отдельная строка
 export type Line = { key: string; id: string; q: number; adds: string[] }
-export type Sheet = { kind: 'dish'; id: string; from?: DOMRect } | { kind: 'cart' } | { kind: 'book' } | { kind: 'info'; topic: 'cert' | 'office' } | null
+export type InfoTopic = 'details' | 'terms' | 'demo'
+export type Sheet = { kind: 'dish'; id: string; from?: DOMRect } | { kind: 'cart' } | { kind: 'book' } | { kind: 'info'; topic: InfoTopic } | { kind: 'review' } | null
 
 type Fly = { src: string; from: DOMRect; n: number }
 
@@ -11,6 +12,7 @@ type Ctx = {
   lines: Line[]
   count: number
   total: number
+  takeawayTotal: number
   qty: (id: string) => number
   add: (id: string, adds?: string[], q?: number, from?: { src: string; rect: DOMRect }) => void
   change: (key: string, d: number) => void
@@ -29,6 +31,12 @@ export const useStore = () => useContext(C)
 const unit = (l: Line) => DISH[l.id].price + l.adds.reduce((a, k) => a + ADDS[k].price, 0)
 export const lineTotal = (l: Line) => unit(l) * l.q
 export const lineUnit = unit
+// Для демо скидка только на основное меню; завтраки и ланч не включаем.
+// Точные исключения ресторан подтвердит до запуска.
+export const lineTakeawayTotal = (l: Line) => {
+  const eligible = !['breakfast', 'lunch'].includes(CAT_OF[l.id])
+  return Math.round(lineTotal(l) * (eligible ? 80 : 100)) / 100
+}
 
 function load(): Line[] {
   try {
@@ -44,6 +52,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [sheet, setSheet] = useState<Sheet>(null)
   const [fly, setFly] = useState<Fly | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const close = useCallback(() => setSheet(null), [])
 
   useEffect(() => {
     try { localStorage.setItem('fasol:cart', JSON.stringify(lines)) } catch { /* приватный режим */ }
@@ -85,12 +94,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     lines,
     count: lines.reduce((a, l) => a + l.q, 0),
     total: lines.reduce((a, l) => a + lineTotal(l), 0),
+    takeawayTotal: Math.round(lines.reduce((a, l) => a + lineTakeawayTotal(l), 0) * 100) / 100,
     qty: (id) => lines.filter((l) => l.id === id).reduce((a, l) => a + l.q, 0),
     add, change, changeById,
     clear: () => setLines([]),
-    sheet, open: setSheet, close: () => setSheet(null),
+    sheet, open: setSheet, close,
     fly, toast,
-  }), [lines, sheet, fly, toast, add, change, changeById])
+  }), [lines, sheet, fly, toast, add, change, changeById, close])
 
   return <C.Provider value={value}>{children}</C.Provider>
 }
